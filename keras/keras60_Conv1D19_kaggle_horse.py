@@ -119,5 +119,5 @@ print('acc_score :', accuracy_score)
 # 걸린 시간 : 18.67 초
 
 # Conv1D
-# loss : 0.05053441971540455
+# loss : 0.0505344197154045
 # acc : 0.9854
