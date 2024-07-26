@@ -109,7 +109,7 @@ accuracy_score = accuracy_score(y_test,np.round(y_pre))
 print('acc_score :', accuracy_score)
 
 
-# loss : 0.0007545964326709509
+# loss : 0.00075459643267095
 # acc : 1.0
 # acc_score : 1.0
 
