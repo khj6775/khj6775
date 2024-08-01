@@ -2,7 +2,7 @@ import numpy as np
 from tensorflow.keras.datasets import mnist, fashion_mnist, cifar100
 import pandas as pd
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, BatchNormalization, MaxPooling2D
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, BatchNormalization, MaxPooling2D, Input
 import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -36,34 +36,35 @@ print(x_test.shape, y_test.shape)
 
 #2. 모델
 model = Sequential()
-model.add(Conv2D(64, (2,2), activation='relu', strides=1,padding='same', input_shape=(32, 32, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
-model.add(MaxPooling2D())
-# model.add(MaxPooling2D(pool_size=3, padding='same'))  # 커널사이즈(3,3)
-model.add(BatchNormalization())
-model.add(Dropout(0.2))
-model.add(Conv2D(filters=128, kernel_size=(2,2), activation='relu',strides=1,padding='same'))
-model.add(MaxPooling2D())
-model.add(BatchNormalization())
-model.add(Dropout(0.2))         # 필터로 증폭, 커널 사이즈로 자른다.                              
-model.add(Conv2D(128, (2,2), activation='relu',strides=1,padding='same')) 
-# model.add(Conv2D(128, 2, activation='relu',strides=1,padding='same'))  # 커널사이즈 간단히 2로만 표현할수도 있다.
-model.add(MaxPooling2D())
-model.add(BatchNormalization())
-model.add(Dropout(0.2))
-model.add(Conv2D(128, (2,2), activation='relu',strides=1,padding='same'))
-model.add(Dropout(0.2))
-model.add(BatchNormalization())
-model.add(Dropout(0.1))
-model.add(Flatten())
+input1 = Input(shape=(32,32,3))
+conv1 = Conv2D(64, 3, activation='relu', 
+               strides=1,padding='same', name='ys1')(input1)
+maxpool1 = MaxPooling2D()(conv1)
+batchnormal1 = BatchNormalization()(maxpool1)
+drop1 = Dropout(0.2)(batchnormal1)
+conv2 = Conv2D(128, 3, activation='relu', 
+               strides=1,padding='same', name='ys2')(drop1)
+maxpool2 = MaxPooling2D()(conv2)
+batchnormal2 = BatchNormalization()(maxpool2)
+drop2 = Dropout(0.2)(batchnormal2)
+conv3 = Conv2D(128, 3, activation='relu', 
+               strides=1,padding='same', name='ys3')(drop2)
+maxpool3 = MaxPooling2D()(conv3)
+batchnormal3 = BatchNormalization()(maxpool3)
+drop3 = Dropout(0.2)(batchnormal3)
+conv4 = Conv2D(128, 3, activation='relu', 
+               strides=1,padding='same', name='ys4')(drop3)
+drop4 = Dropout(0.2)(conv4)
+batchnormal4 = BatchNormalization()(drop4)
+drop5 = Dropout(0.1)(batchnormal4)
 
-# model.add(Dense(units=128, activation='relu'))
-# model.add(Dropout(0.2))
-model.add(Dense(units=128, activation='relu', input_shape=(32,)))
-model.add(Dropout(0.1))
+flat = Flatten()(drop5)
 
-model.add(Dense(100, activation='softmax'))
+dense2 = Dense(units=128, activation='relu', input_shape=(32,))(flat)
+drop6 = Dropout(0.1)(dense2)
+output1 = Dense(100, activation='softmax')(drop6)
+model = Model(inputs=input1, outputs=output1) 
 
-model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
@@ -155,3 +156,9 @@ print("걸린 시간 :", round(end-start,2),'초')
 # acc : 0.53
 # accuracy_score : 0.5252
 # 걸린 시간 : 2130.92 초
+
+# 함수형
+# loss : 1.9940555095672607
+# acc : 0.49
+# accuracy_score : 0.4872
+# 걸린 시간 : 99.48 초

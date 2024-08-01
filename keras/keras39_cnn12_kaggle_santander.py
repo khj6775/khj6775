@@ -8,8 +8,8 @@
 
 import numpy as np
 import pandas as pd
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Dropout, Input
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Conv2D, Flatten, BatchNormalization, MaxPooling2D
 from sklearn.model_selection import train_test_split
 import time
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -46,73 +46,61 @@ x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.8,
                                                     random_state=632,
                                                     stratify=y)
 
+# from sklearn.preprocessing import MinMaxScaler, StandardScaler
+# from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+# # scaler = MinMaxScaler()
+# # scaler = StandardScaler()
+# # scaler = MaxAbsScaler()
+# scaler = RobustScaler()
 
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
-# scaler = MinMaxScaler()
-# scaler = StandardScaler()
-# scaler = MaxAbsScaler()
-scaler = RobustScaler()
+
+# scaler.fit(x_train)
+# x_train = scaler.transform(x_train)
+# x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
+
+# print('x_train :', x_train)
+# print(np.min(x_train), np.max(x_train))
+# print(np.min(x_test), np.max(x_test))
 
 
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
+x_train = x_train.to_numpy()
+x_test = x_test.to_numpy()
 
-print('x_train :', x_train)
-print(np.min(x_train), np.max(x_train))
-print(np.min(x_test), np.max(x_test))
+x_train = x_train.reshape(-1,50,4,1)
+x_test = x_test.reshape(-1,50,4,1)
 
-# #2. 모델구성
-# model = Sequential()
-# model.add(Dense(128, activation='relu', input_dim=200))
-# model.add(Dropout(0.3))
-# model.add(Dense(128, activation='relu'))
-# model.add(Dropout(0.3))
-# model.add(Dense(128, activation='relu'))
+x_train = x_train/255.
+x_test = x_test/255.
+
+#2. 모델구성
+model = Sequential()
+model.add(Conv2D(64, (2,2), activation='relu', 
+                 strides=1,padding='same', input_shape=(50,4,1)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
+# model.add(MaxPooling2D())
+# model.add(MaxPooling2D(pool_size=3, padding='same'))  # 커널사이즈(3,3)
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
+model.add(Conv2D(filters=128, kernel_size=(2,2), activation='relu',strides=1,padding='same'))
+# model.add(MaxPooling2D())
+model.add(BatchNormalization())
+model.add(Dropout(0.2))         # 필터로 증폭, 커널 사이즈로 자른다.                              
+model.add(Conv2D(128, (2,2), activation='relu',strides=1,padding='same')) 
+# model.add(Conv2D(128, 2, activation='relu',strides=1,padding='same'))  # 커널사이즈 간단히 2로만 표현할수도 있다.
+# model.add(MaxPooling2D())
+model.add(BatchNormalization())
+model.add(Dropout(0.2))
+model.add(Conv2D(128, (2,2), activation='relu',strides=1,padding='same'))
+model.add(Dropout(0.2))
+model.add(BatchNormalization())
+model.add(Dropout(0.1))
+model.add(Flatten())
+
+# model.add(Dense(units=128, activation='relu'))
 # model.add(Dropout(0.2))
-# model.add(Dense(128, activation='relu'))
-# model.add(Dropout(0.2))
-# model.add(Dense(128, activation='relu'))
-# model.add(Dropout(0.1))
-# model.add(Dense(64, activation='relu'))
-# model.add(Dropout(0.1))
-# model.add(Dense(32, activation='relu'))
-# model.add(Dense(16, activation='relu'))
-# model.add(Dense(8, activation='relu'))
-# model.add(Dense(4, activation='relu'))
-# model.add(Dense(2, activation='relu')) #중간에 sigmoid 넣어줄수있다.
-
-# model.add(Dense(1, activation='sigmoid'))
-
-#2-2. 모델구성(함수형)
-
-input1 = Input(shape=(200, ))
-dense1 = Dense(128,activation='relu',name='ys1')(input1)
-drop1 = Dropout(0.3)(dense1)
-dense2 = Dense(128, activation='relu',name='ys2')(drop1)
-drop2 = Dropout(0.3)(dense2)
-dense3 = Dense(128, activation='relu', name='ys3')(drop2)
-drop3 = Dropout(0.2)(dense3)
-dense4 = Dense(128, activation='relu', name='ys4')(drop3)
-drop4 = Dropout(0.2)(dense4)
-dense5 = Dense(128, activation='relu', name='ys5')(drop4)
-drop5 = Dropout(0.1)(dense5)
-dense6 = Dense(64, activation='relu', name='ys6')(drop5)
-drop6 = Dropout(0.1)(dense6)
-dense7 = Dense(32, activation='relu', name='ys7')(drop6)
-dense8 = Dense(16, activation='relu', name='ys8')(dense7)
-dense9 = Dense(8, activation='relu', name='ys9')(dense8)
-dense10 = Dense(4, activation='relu', name='ys10')(dense9)
-dense11 = Dense(2, activation='relu', name='ys11')(dense10)
-
-output1 = Dense(1, activation='sigmoid', name='ys12')(dense11)
-model=Model(inputs=input1, outputs=output1)
-model.summary()
-
-
-
+model.add(Dense(units=128, activation='relu', input_shape=(32,)))
+model.add(Dropout(0.1))
+model.add(Dense(1, activation='sigmoid'))
 
 #3. 컴파일, 훈련
 # model.compile(loss='mse', optimizer='adam', metrics=['accuracy', 'acc', 'mse'])  # 매트릭스에 애큐러시를 넣으면 반올림해준다.
@@ -135,9 +123,9 @@ print(date)
 print(type(date)) # <class 'str'>
 
 
-path ='C:/AI5/_save/keras32_mcp/12_kaggle_santander/'
+path ='C:/AI5/_save/keras39/12_kaggle_santander/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'    # 1000-0.7777.hdf5    { } = dictionary, 키와 밸류  d는 정수, f는 소수
-filepath = "".join([path, 'k32_12', date, '_', filename])      # 파일위치와 이름을 에포와 발로스로 나타내준다
+filepath = "".join([path, 'k39_12', date, '_', filename])      # 파일위치와 이름을 에포와 발로스로 나타내준다
 # 생성 예 : ""./_save/keras29_mcp/k29_1000-0.7777.hdf5"
 ##################### MCP 세이브 파일명 만들기 끝 ###########################
 
@@ -150,7 +138,7 @@ mcp = ModelCheckpoint(
 )
 
 
-hist = model.fit(x_train, y_train, epochs=2000, batch_size=128,
+hist = model.fit(x_train, y_train, epochs=1, batch_size=256,
                  validation_split=0.2,
                  callbacks=[es, mcp]
                  )
@@ -172,19 +160,19 @@ accuracy_score = accuracy_score(y_test, y_pred)
 print("acc_score : ", accuracy_score)
 print("걸린시간 : ", round(end - start , 2),"초")
 
-y_submit = np.round(model.predict(test_csv))      # round 꼭 넣기
+y_submit = np.round(model.predict(test_csv.values.reshape(-1,50,4,1)))      # round 꼭 넣기
 print(y_submit)
 print(y_submit.shape)     
 
 #################  submission.csv 만들기 // count 컬럼에 값만 넣어주면 된다 ######
-submission_csv['target'] = y_submit
-print(submission_csv)
-print(submission_csv.shape)
+# submission_csv['target'] = y_submit
+# print(submission_csv)
+# print(submission_csv.shape)
 
 # submission_csv.to_csv(path + "submission_0725_1552.csv")
 
-print('로스 :', loss)
-print("acc :", round(loss[1],3))
+# print('로스 :', loss)
+# print("acc :", round(loss[1],3))
 
 # 로스 : [0.32618698477745056, 0.8995000123977661]
 # acc : 0.9
@@ -192,3 +180,4 @@ print("acc :", round(loss[1],3))
 # Dropout 적용
 # 로스 : [0.2412164807319641, 0.9101999998092651]
 # acc : 0.91
+

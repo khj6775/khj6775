@@ -41,7 +41,7 @@ model.add(MaxPooling2D())
 model.add(BatchNormalization())
 model.add(Dropout(0.2))
 model.add(Conv2D(128, (2,2), activation='relu',strides=1,padding='same'))
-# model.add(Dropout(0.2))
+model.add(Dropout(0.2))
 model.add(BatchNormalization())
 model.add(Dropout(0.1))
 model.add(Flatten())
@@ -56,7 +56,7 @@ model.summary()
 #3. 컴파일, 훈련
 model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['acc'])
 es = EarlyStopping(
-    monitor='val_accuracy',
+    monitor='val_acc',
     mode='max',
     patience=30,
     restore_best_weights=True
@@ -74,7 +74,7 @@ filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 filepath = "".join([path, '37_04', date, '_', filename])
 
 mcp = ModelCheckpoint(
-    monitor = 'val_accuracy',
+    monitor = 'val_acc',
     mode='max',
     verbose=1,
     save_best_only=True,
