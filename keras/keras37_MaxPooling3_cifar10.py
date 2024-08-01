@@ -2,7 +2,7 @@ import numpy as np
 from tensorflow.keras.datasets import mnist, fashion_mnist, cifar10
 import pandas as pd
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -34,14 +34,17 @@ print(x_test.shape, y_test.shape)
 
 #2. 모델
 model = Sequential()
-model.add(Conv2D(64, (3,3), activation='relu', input_shape=(32, 32, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
-model.add(Conv2D(filters=64, kernel_size=(3,3)))
+model.add(Conv2D(64, (3,3), activation='relu',strides=1,padding='same', input_shape=(32, 32, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
+model.add(MaxPooling2D())
+model.add(Conv2D(filters=64, kernel_size=(3,3),activation='relu', strides=1,padding='same'))
+model.add(MaxPooling2D())
 model.add(Dropout(0.3))         # 필터로 증폭, 커널 사이즈로 자른다.                              
-model.add(Conv2D(64, (2,2), activation='relu')) 
+model.add(Conv2D(64, (2,2), activation='relu',strides=1,padding='same')) 
+model.add(MaxPooling2D())
 model.add(Dropout(0.2))
-model.add(Conv2D(64, (2,2), activation='relu')) 
+model.add(Conv2D(64, (2,2), activation='relu',strides=1,padding='same')) 
 model.add(Dropout(0.2))
-model.add(Conv2D(32, (2,2), activation='relu')) 
+model.add(Conv2D(32, (2,2), activation='relu',strides=1,padding='same')) 
 model.add(Dropout(0.1))
 
          # 필터로 증폭, 커널 사이즈로 자른다.                              
@@ -81,9 +84,9 @@ print(date)
 print(type(date)) # <class 'str'>
 
 
-path ='./_save/keras35_06/'
+path ='./_save/keras37_03/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'    # 1000-0.7777.hdf5    { } = dictionary, 키와 밸류  d는 정수, f는 소수
-filepath = "".join([path, 'k35_06', date, '_', filename])      # 파일위치와 이름을 에포와 발로스로 나타내준다
+filepath = "".join([path, 'k37_03', date, '_', filename])      # 파일위치와 이름을 에포와 발로스로 나타내준다
 # 생성 예 : ""./_save/keras29_mcp/k29_1000-0.7777.hdf5"
 ##################### MCP 세이브 파일명 만들기 끝 ###########################
 
@@ -97,7 +100,7 @@ mcp = ModelCheckpoint(
 
 
 start = time.time()
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=2048,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=512,
           verbose=1,
           validation_split=0.2,
           callbacks=[es, mcp]
@@ -120,14 +123,20 @@ r2 = accuracy_score(y_test, y_pre)
 print('accuracy_score :', r2)
 print("걸린 시간 :", round(end-start,2),'초')
 
-import tensorflow as tf
-(cifar_x, cifar_y), _ = tf.keras.datasets.cifar10.load_data()
-print(cifar_x.shape, cifar_y.shape)
+# import tensorflow as tf
+# (cifar_x, cifar_y), _ = tf.keras.datasets.cifar10.load_data()
+# print(cifar_x.shape, cifar_y.shape)
 
-import matplotlib.pyplot as plt
-plt.imshow()
+# import matplotlib.pyplot as plt
+# plt.imshow()
 
-# loss : 1.0738571882247925
+# loss : 1.026166558265686
 # acc : 0.64
-# accuracy_score : 0.6359
-# 걸린 시간 : 395.4 초
+# accuracy_score : 0.6443
+# 걸린 시간 : 560.09 초
+
+# MaxPooling 적용
+# loss : 0.6229567527770996
+# acc : 0.8
+# accuracy_score : 0.7972
+# 걸린 시간 : 384.29 초

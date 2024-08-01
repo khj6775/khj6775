@@ -81,6 +81,8 @@ model.add(Dropout(0.2))
 model.add(Conv2D(32, (2,2), activation='relu')) 
 model.add(Dropout(0.1))
 
+model.summary()
+
          # 필터로 증폭, 커널 사이즈로 자른다.                              
                                 # shape = (batch_size, height, width, channels), (batch_size, rows, columns, channels)   
                                 # shape = (batch_size, new_height, new_width, filters)
