@@ -125,7 +125,7 @@ mcp = ModelCheckpoint(
     filepath = filepath
 )
 
-hist = model.fit(x_train, y_train, epochs=1, batch_size=128,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=128,
                  validation_split=0.2,
                  callbacks=[es, mcp]
                  )

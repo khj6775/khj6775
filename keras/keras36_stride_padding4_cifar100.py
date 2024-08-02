@@ -36,7 +36,7 @@ print(x_test.shape, y_test.shape)
 #2. 모델
 model = Sequential()
 model.add(Conv2D(64, (2,2), activation='relu', strides=1,padding='same', input_shape=(32, 32, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
-model.add(BatchNomalization)
+model.add(BatchNormalization)
 model.add(Conv2D(filters=128, kernel_size=(3,3), activation='relu',strides=1,padding='same'))
 
 model.add(Dropout(0.2))         # 필터로 증폭, 커널 사이즈로 자른다.                              

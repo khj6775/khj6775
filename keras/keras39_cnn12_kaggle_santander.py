@@ -138,7 +138,7 @@ mcp = ModelCheckpoint(
 )
 
 
-hist = model.fit(x_train, y_train, epochs=1, batch_size=256,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=256,
                  validation_split=0.2,
                  callbacks=[es, mcp]
                  )
@@ -181,3 +181,5 @@ print(y_submit.shape)
 # 로스 : [0.2412164807319641, 0.9101999998092651]
 # acc : 0.91
 
+# 로스 :  0.23135747015476227
+# acc :  0.917

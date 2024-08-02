@@ -60,7 +60,7 @@ drop5 = Dropout(0.1)(batchnormal4)
 
 flat = Flatten()(drop5)
 
-dense2 = Dense(units=128, activation='relu', input_shape=(32,))(flat)
+dense2 = Dense(units=128, activation='relu')(flat)
 drop6 = Dropout(0.1)(dense2)
 output1 = Dense(100, activation='softmax')(drop6)
 model = Model(inputs=input1, outputs=output1) 

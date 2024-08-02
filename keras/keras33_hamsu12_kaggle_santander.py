@@ -42,9 +42,13 @@ print(x)
 y = train_csv['target']         # 'count' 컬럼만 넣어주세요
 print(y.shape)   
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.8,
-                                                    random_state=632,
-                                                    stratify=y)
+x_train, x_test, y_train, y_test = train_test_split(
+    x,
+    y,
+    train_size=0.8,
+    random_state=632,
+    stratify=y
+)
 
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
@@ -54,10 +58,11 @@ from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 # scaler = MaxAbsScaler()
 scaler = RobustScaler()
 
-
 scaler.fit(x_train)
+
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
+
 test_csv = scaler.transform(test_csv)
 
 print('x_train :', x_train)
@@ -89,6 +94,7 @@ print(np.min(x_test), np.max(x_test))
 #2-2. 모델구성(함수형)
 
 input1 = Input(shape=(200, ))
+
 dense1 = Dense(128,activation='relu',name='ys1')(input1)
 drop1 = Dropout(0.3)(dense1)
 dense2 = Dense(128, activation='relu',name='ys2')(drop1)
@@ -108,7 +114,9 @@ dense10 = Dense(4, activation='relu', name='ys10')(dense9)
 dense11 = Dense(2, activation='relu', name='ys11')(dense10)
 
 output1 = Dense(1, activation='sigmoid', name='ys12')(dense11)
+
 model=Model(inputs=input1, outputs=output1)
+
 model.summary()
 
 
@@ -116,7 +124,10 @@ model.summary()
 
 #3. 컴파일, 훈련
 # model.compile(loss='mse', optimizer='adam', metrics=['accuracy', 'acc', 'mse'])  # 매트릭스에 애큐러시를 넣으면 반올림해준다.
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
+model.compile(loss='binary_crossentropy', 
+              optimizer='adam', 
+              metrics=['acc']
+              )
 start = time.time()
 
 es = EarlyStopping(
@@ -150,7 +161,9 @@ mcp = ModelCheckpoint(
 )
 
 
-hist = model.fit(x_train, y_train, epochs=2000, batch_size=128,
+hist = model.fit(x_train, y_train, 
+                 epochs=2000, 
+                 batch_size=128,
                  validation_split=0.2,
                  callbacks=[es, mcp]
                  )
