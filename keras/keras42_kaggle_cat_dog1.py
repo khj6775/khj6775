@@ -56,7 +56,7 @@ path_test = "C:/ai5/_data/kaggle/dogs-vs-cats-redux-kernels-edition/test/"
 xy_train = train_datagen.flow_from_directory(
     path_train,            
     target_size=(100,100),  
-    batch_size=30000,          
+    batch_size=25000,          
     class_mode='binary',  
     color_mode='rgb',  
     shuffle=True, 
@@ -65,51 +65,54 @@ xy_train = train_datagen.flow_from_directory(
 xy_test = test_datagen.flow_from_directory(
     path_test, 
     target_size=(100,100),
-    batch_size=30000,            
+    batch_size=12500,            
     class_mode='binary',
     color_mode='rgb',
     shuffle=False,  
 )   
 
 
-x_train, x_test, y_train, y_test = train_test_split(xy_train[0][0], xy_train[0][1], test_size=0.2, random_state=231)
+x_train, x_test, y_train, y_test = train_test_split(xy_train[0][0], xy_train[0][1], test_size=0.2, random_state=5289)
 end1 = time.time()
 
 print('데이터 걸린시간 :',round(end1-start1,2),'초')
 
 print(x_train.shape, y_train.shape) # (20000, 100, 100, 3) (20000,)
 print(x_test.shape, y_test.shape)   # (5000, 100, 100, 3) (5000,)
-# 데이터 걸린시간 : 48.61 초
 
 xy_test = xy_test[0][0]
 # print(xy_test)
 # print(xy_test.shape)
 
 #2. 모델 구성
-model = Sequential
-model.add(Conv2D(64, (3,3), 
+model = Sequential()
+model.add(Conv2D(64, (2,2), 
                  activation='relu', 
                  strides=1,padding='same',
                  input_shape=(100, 100, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
 model.add(MaxPooling2D())
 model.add(BatchNormalization())
-model.add(Conv2D(filters=64,strides=1,padding='same', kernel_size=(3,3)))
+model.add(Dropout(0.25))
+model.add(Conv2D(filters=64,strides=1,padding='same', kernel_size=(2,2)))
 model.add(MaxPooling2D())
 model.add(BatchNormalization())
-model.add(Dropout(0.3))         # 필터로 증폭, 커널 사이즈로 자른다.                              
-model.add(Conv2D(64, (2,2), activation='relu',strides=1,padding='same')) 
-model.add(BatchNormalization())
-model.add(Dropout(0.2))
+model.add(Dropout(0.25))         # 필터로 증폭, 커널 사이즈로 자른다.                              
+# model.add(Conv2D(64, (2,2), activation='relu',strides=1,padding='same')) 
+# # model.add(BatchNormalization())
+# model.add(Dropout(0.25))
 model.add(Conv2D(32, (2,2), strides=1,padding='same',activation='relu')) 
+model.add(MaxPooling2D())
 model.add(BatchNormalization())
-model.add(Dropout(0.1))
+model.add(Dropout(0.25))
 
 model.add(Flatten())
 
 model.add(Dense(units=32, activation='relu'))
-model.add(Dropout(0.1))
-
+model.add(Dropout(0.25))
 model.add(Dense(units=16, activation='relu'))
+model.add(Dropout(0.25))
+model.add(Dense(units=16, activation='relu'))
+
                         # shape = (batch_size, input_dim)
 model.add(Dense(1, activation='sigmoid'))
 
@@ -119,7 +122,7 @@ model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['acc'])
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_loss', mode='min', 
-                   patience=10, verbose=1,
+                   patience=20, verbose=1,
                    restore_best_weights=True,
                    )
 
@@ -142,8 +145,8 @@ mcp = ModelCheckpoint(
 )
 
 start = time.time()
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=10,
-          validation_split=0.1,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=16,
+          validation_split=0.2,
           callbacks=[es, mcp],
           )
 end = time.time()
@@ -172,7 +175,7 @@ y_submit = model.predict(xy_test)
 
 print(y_submit)
 sampleSubmission_csv['label'] = y_submit
-sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0804_2038.csv")
+sampleSubmission_csv.to_csv(path1 + "sampleSubmission_0805_0931.csv")
 
 
 
