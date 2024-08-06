@@ -35,21 +35,43 @@ print(aaa.shape)
 xy_data = train_datagen.flow(
     np.tile(x_train[0].reshape(28*28), augment_size).reshape(-1,28,28,1),
     np.zeros(augment_size),
-    batch_size=augment_size,
+    batch_size=32,   # batch_size default =32
     shuffle=False,
-).next()
+)   # .next()
 
 print(xy_data)
-print(type(xy_data))  # <class 'tuple'>
+print(type(xy_data))  # .next()가 있으면 <class 'tuple'>
+# <class 'keras.preprocessing.image.NumpyArrayIterator'>
+
+#print(xy_data[0].shape)    # AttributeError: 'tuple' object has no attribute 'shape'
+
+print(xy_data[0][0].shape)  # (32, 28, 28, 1)
+print(xy_data[2][0].shape)  # (32, 28, 28, 1)
+print(xy_data[3][0].shape)  # (4, 28, 28, 1)
+# print(xy_data[4][0].shape)  # ValueError: Asked to retrieve element 4, but the Sequence has length 4
+
+print(xy_data[0][1].shape)  # (32,)
+
+
+
+'''
+print(len(xy_data))  # 1
+
+# print(xy_data[0].shape)     # AttributeError: 'tuple' object has no attribute 'shape'
+# print(xy_data[1].shape)     # AttributeError: 'tuple' object has no attribute 'shape'
+
+print(xy_data[0][0].shape)    # (100, 28, 28, 1)
+
 
 # print(x_data.shape)     # AttributeError: 'tuple' object has no attribute 'shape', len으로 확인
 print(len(xy_data))       # 2   튜플안에 두개의 넘파이가 들어가있다.(x,y)
-print(xy_data[0].shape)   # (100, 28, 28, 1)
-print(xy_data[1].shape)   # (100, )
+# print(xy_data[0].shape)   # (100, 28, 28, 1)
+# print(xy_data[1].shape)   # (100, )
 
 plt.figure(figsize=(7,7))   # 7인치
 for i in range(49):
     plt.subplot(7, 7, i+1)
-    plt.imshow(xy_data[0][i], cmap='gray')
+    plt.imshow(xy_data[0][0][i], cmap='gray')
 
 plt.show()
+'''

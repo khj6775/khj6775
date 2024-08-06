@@ -1,61 +1,79 @@
-
+import numpy as np
 import pandas as pd
-from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D, BatchNormalization
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input, Conv2D, Flatten, Dropout, MaxPooling2D
 import time
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.metrics import r2_score, accuracy_score
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 
-import numpy as np
+from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import matplotlib.pyplot as plt
 
-# train_datagen = ImageDataGenerator(
-#     rescale=1./255
-# )
 
-# test_datagen = ImageDataGenerator(
-#     rescale=1./255
-# )
-
-# path_train = './_data/image/brain/train/'
-# path_test = './_data/image/brain/test/'
-
-# xy_train = train_datagen.flow_from_directory(
-#     path_train,
-#     target_size=(200, 200),
-#     batch_size=160,
-#     class_mode='binary',
-#     color_mode='grayscale',
-#     shuffle=True
-# )
-
-# xy_test = test_datagen.flow_from_directory(
-#     path_test,
-#     target_size=(200,200),
-#     batch_size=160,
-#     class_mode='binary',
-#     color_mode='grayscale',
-# )
-
-# # batch_size=160
-# x_train = xy_train[0][0]
-# y_train = xy_train[0][1]
-# x_test = xy_test[0][0]
-# y_test = xy_test[0][1]
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    horizontal_flip=True,        # 수평 뒤집기 = 증폭(완전 다른 데이터가 하나 더 생겼다)
+    vertical_flip=True,         # 수직 뒤집기 = 증폭
+    width_shift_range=0.1,      # 평행 이동   = 증폭
+    height_shift_range=0.1,     # 평행 이동 수직
+    rotation_range=15,           # 정해진 각도만큼 이미지 회전
+    zoom_range=1.2,             # 축소 또는 확대
+    shear_range=0.7,            # 좌표 하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환.
+    fill_mode='nearest',        # 원래 있던 가까운 놈으로 채운다.
+)
 
 np_path = 'c:/AI5/_data/_save_npy/'     # 수치들의 형태는 다 넘파이다.
-# np.save(np_path + 'keras45_01_brain_x_train.npy', arr=xy_train[0][0])
-# np.save(np_path + 'keras45_01_brain_y_train.npy', arr=xy_train[0][1])
-# np.save(np_path + 'keras45_01_brain_x_test.npy', arr=xy_test[0][0])
-# np.save(np_path + 'keras45_01_brain_y_test.npy', arr=xy_test[0][1])
-
 
 x_train = np.load(np_path + 'keras45_02_horse_x_train.npy')
 y_train = np.load(np_path + 'keras45_02_horse_y_train.npy')
 
 
-x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2, random_state=5289)
+# 판다스 데이터 변경 숙달 시키기.
+
+
+augment_size = 10000
+
+print(x_train.shape[0]) # 60000
+randidx = np.random.randint(x_train.shape[0], size=augment_size)  # 60000, size=40000
+print(randidx)  # [31344  4982 40959 ... 30622 14619 15678]
+print(np.min(randidx), np.max(randidx))    # 0 59995
+
+print(x_train[0].shape)     # (28,28)
+
+x_augmented = x_train[randidx].copy()     # 카피하면 메모리 안전빵
+y_augmented = y_train[randidx].copy()
+print(x_augmented.shape, y_augmented.shape)     # (40000, 28, 28) (40000,)
+
+x_augmented = x_augmented.reshape(
+    x_augmented.shape[0],   # 40000
+    x_augmented.shape[1],   # 28
+    x_augmented.shape[2], 3)  # 28
+print(x_augmented.shape)    # (40000, 28, 28, 1)
+
+x_augmented = train_datagen.flow(
+    x_augmented, y_augmented,
+    batch_size=augment_size,
+    shuffle=False,
+).next()[0]
+
+print(x_augmented.shape)    
+
+x_train = x_train.reshape(-1, 100, 100, 3)
+# x_test = x_test.reshape(-1, 100, 100, 3)
+
+print(x_train.shape)  
+
+x_train = np.concatenate((x_augmented, x_train), axis=0)  # axis=0 default
+y_train = np.concatenate((y_augmented, y_train), axis=0)  # axis=0 default 
+
+print(x_train.shape, y_train.shape)    
+
+x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.8, random_state=3115, )
 
 
 
@@ -64,7 +82,7 @@ model = Sequential()
 model.add(Conv2D(64, (3,3), 
                  activation='relu', 
                  strides=1,padding='same',
-                 input_shape=(200, 200, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
+                 input_shape=(100, 100, 3)))   # 데이터의 개수(n장)는 input_shape 에서 생략, 3차원 가로세로컬러  27,27,10
 model.add(MaxPooling2D())
 model.add(Conv2D(filters=64,strides=1,padding='same', kernel_size=(3,3)))
 model.add(MaxPooling2D())
@@ -136,6 +154,3 @@ y_pre = model.predict(x_test)
 y_pre = np.round(y_pre)
 r2 = accuracy_score(y_test, y_pre)
 print('accuracy_score :', r2)
-
-# loss : 0.3344825208187103
-# acc : 0.90625

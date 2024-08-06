@@ -9,9 +9,3 @@ model = load_model('C:/AI5/_save/keras45/07_save_npy_gender/k45_gender_0805_1515
 y_pred = np.round(model.predict(me))
 
 print(y_pred)
-
-if y_pred >=0.5:
-    print(y_pred,'%의 확률로 여자')
-
-else:
-    print(abs(1-y_pred),"% 의 확률로 남자")
