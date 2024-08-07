@@ -21,7 +21,7 @@ path_train = './_data/image/rps/'
 
 xy_train = train_datagen.flow_from_directory(
     path_train,
-    target_size=(200, 200),
+    target_size=(100, 100),
     batch_size=840,
     class_mode='categorical',
     color_mode='rgb',

@@ -1,42 +1,40 @@
-
+import numpy as np
 import pandas as pd
-from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D, BatchNormalization
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input, Conv2D, Flatten, Dropout, MaxPooling2D
 import time
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.metrics import r2_score, accuracy_score
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
 
-
-import numpy as np
+from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import matplotlib.pyplot as plt
 
-import os
 
-# os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
-
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    horizontal_flip=True,        # 수평 뒤집기 = 증폭(완전 다른 데이터가 하나 더 생겼다)
+    vertical_flip=True,         # 수직 뒤집기 = 증폭
+    width_shift_range=0.1,      # 평행 이동   = 증폭
+    height_shift_range=0.1,     # 평행 이동 수직
+    rotation_range=15,           # 정해진 각도만큼 이미지 회전
+    zoom_range=1.2,             # 축소 또는 확대
+    shear_range=0.7,            # 좌표 하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환.
+    fill_mode='nearest',        # 원래 있던 가까운 놈으로 채운다.
+)
 
 np_path = 'c:/AI5/_data/_save_npy/'     # 수치들의 형태는 다 넘파이다.
-# np.save(np_path + 'keras45_01_brain_x_train.npy', arr=xy_train[0][0])
-# np.save(np_path + 'keras45_01_brain_y_train.npy', arr=xy_train[0][1])
-# np.save(np_path + 'keras45_01_brain_x_test.npy', arr=xy_test[0][0])
-# np.save(np_path + 'keras45_01_brain_y_test.npy', arr=xy_test[0][1])
+
+x_train = np.load(np_path + 'keras45_02_horse_x_train.npy')
+y_train = np.load(np_path + 'keras45_02_horse_y_train.npy')
 
 
-x_train = np.load(np_path + 'keras45_03_rps_x_train.npy')
-y_train = np.load(np_path + 'keras45_03_rps_y_train.npy')
+# 판다스 데이터 변경 숙달 시키기.
 
-train_datagen =  ImageDataGenerator(
-    rescale=1./255,              # 이미지를 수치화 할 때 0~1 사이의 값으로 (스케일링 한 데이터로 사용)
-    horizontal_flip=True,        # 수평 뒤집기   <- 데이터 증폭 
-    vertical_flip=True,          # 수직 뒤집기 (상하좌우반전) <- 데이터 증폭
-    width_shift_range=0.2,       # 평행이동  <- 데이터 증폭
-    height_shift_range=0.1,      # 평행이동 수직  <- 데이터 증폭
-    rotation_range=15,            # 각도 조절 (정해진 각도만큼 이미지 회전)
-    zoom_range=1.2,              # 축소 또는 확대
-    shear_range=0.7,             # 좌표 하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환 (찌부시키기)
-    fill_mode='nearest',         # 10% 이동 시 한쪽은 소실, 한쪽은 가까이에 있던 부분의 이미지로 채워짐
-)
 
 augment_size = 10000
 
@@ -61,6 +59,7 @@ x_augmented = train_datagen.flow(
     x_augmented, y_augmented,
     batch_size=augment_size,
     shuffle=False,
+    save_to_dir="c:/AI5/_data/_save_img/07_horse/"
 ).next()[0]
 
 print(x_augmented.shape)    
@@ -75,9 +74,10 @@ y_train = np.concatenate((y_augmented, y_train), axis=0)  # axis=0 default
 
 print(x_train.shape, y_train.shape)    
 
-x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2, random_state=5289)
+x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.8, random_state=3115, )
 
 
+'''
 #2. 모델
 model = Sequential()
 model.add(Conv2D(64, (3,3), 
@@ -92,7 +92,6 @@ model.add(Conv2D(64, (2,2), activation='relu',strides=1,padding='same'))
 model.add(Dropout(0.2))
 model.add(Conv2D(32, (2,2), strides=1,padding='same',activation='relu')) 
 model.add(Dropout(0.1))
-
 model.add(Flatten())
 
 model.add(Dense(units=32, activation='relu'))
@@ -100,18 +99,18 @@ model.add(Dropout(0.1))
 
 model.add(Dense(units=16, activation='relu'))
                         # shape = (batch_size, input_dim)
-model.add(Dense(3, activation='softmax'))
+model.add(Dense(1, activation='sigmoid'))
 
 
 # model.summary()
 
 #3. 컴파일, 훈련
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 start = time.time()
 es = EarlyStopping(
     monitor='val_loss',
     mode='min',
-    patience=30,
+    patience=60,
     restore_best_weights=True
 )
 
@@ -120,9 +119,9 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras49/08_save_rps/'
+path = './_save/keras45_02_horse/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k49_rps_', date, '_', filename])   
+filepath = "".join([path, 'k45_horse_', date, '_', filename])   
 #####################################
 
 mcp = ModelCheckpoint(
@@ -134,22 +133,21 @@ mcp = ModelCheckpoint(
 )
 
 # start = time.time()
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=8,
+hist = model.fit(x_train, y_train, epochs=1000, batch_size=16,
           validation_split=0.2,
           callbacks=[es, mcp],
           )
 
 end = time.time()
 
-# model = load_model('C:/AI5/_save/keras45_03_rps/k45_rps_0805_1252_0019-0.4363.hdf5')
 
 
 #4. 평가, 예측
-loss = model.evaluate(x_test, y_test, verbose=1, batch_size=16)
+loss = model.evaluate(x_test, y_test, verbose=1)
 print('loss :', loss[0])
 print('acc :', round(loss[1],5))
 
-y_pre = model.predict(x_test, batch_size=16)
+y_pre = model.predict(x_test)
 # r2 = r2_score(y_test,y_pre)
 # print('r2 score :', r2)
 # print("걸린 시간 :", round(end-start,2),'초')
@@ -157,3 +155,4 @@ y_pre = model.predict(x_test, batch_size=16)
 y_pre = np.round(y_pre)
 r2 = accuracy_score(y_test, y_pre)
 print('accuracy_score :', r2)
+'''

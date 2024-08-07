@@ -61,6 +61,8 @@ x_augmented = train_datagen.flow(
     x_augmented, y_augmented,
     batch_size=augment_size,
     shuffle=False,
+    save_to_dir="c:/AI5/_data/_save_img/08_rps/"
+
 ).next()[0]
 
 print(x_augmented.shape)    
@@ -77,7 +79,7 @@ print(x_train.shape, y_train.shape)
 
 x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2, random_state=5289)
 
-
+'''
 #2. 모델
 model = Sequential()
 model.add(Conv2D(64, (3,3), 
@@ -157,3 +159,4 @@ y_pre = model.predict(x_test, batch_size=16)
 y_pre = np.round(y_pre)
 r2 = accuracy_score(y_test, y_pre)
 print('accuracy_score :', r2)
+'''

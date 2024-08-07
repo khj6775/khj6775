@@ -27,23 +27,84 @@ np_path = 'c:/AI5/_data/_save_npy/'     # 수치들의 형태는 다 넘파이�
 # np.save(np_path + 'keras45_01_brain_x_test.npy', arr=xy_test[0][0])
 # np.save(np_path + 'keras45_01_brain_y_test.npy', arr=xy_test[0][1])
 
-x_train1 = np.load(np_path + 'keras45_07_gender_x_train1.npy')
-y_train1 = np.load(np_path + 'keras45_07_gender_y_train1.npy')
 
 x_train = np.load(np_path + 'keras45_07_gender_x_train.npy')
 y_train = np.load(np_path + 'keras45_07_gender_y_train.npy')
 
+x_train_woman = x_train[np.where(y_train > 0.0)]        # 0.0 보다 큰 y값이 있는 인덱스 추출
+y_train_woman = y_train[np.where(y_train > 0.0)]
+
+x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.1, random_state=921)
+end1 = time.time()
+
+print('데이터 걸린시간 :',round(end1-start1,2),'초')
+# 데이터 걸린시간 : 1.43 초
+
+print(x_train.shape, y_train.shape) # (24450, 100, 100, 3) (24450,)
+print(x_test.shape, y_test.shape)   # (2717, 100, 100, 3) (2717,)
+# 데이터 걸린시간 : 48.61 초
+
+train_datagen =  ImageDataGenerator(
+    # rescale=1./255,              # 이미지를 수치화 할 때 0~1 사이의 값으로 (스케일링 한 데이터로 사용)
+    horizontal_flip=True,        # 수평 뒤집기   <- 데이터 증폭 
+    vertical_flip=True,          # 수직 뒤집기 (상하좌우반전) <- 데이터 증폭
+    # width_shift_range=0.2,       # 평행이동  <- 데이터 증폭
+    # height_shift_range=0.1,      # 평행이동 수직  <- 데이터 증폭
+    rotation_range=5,            # 각도 조절 (정해진 각도만큼 이미지 회전)
+    # zoom_range=1.2,              # 축소 또는 확대
+    # shear_range=0.7,             # 좌표 하나를 고정시키고 다른 몇개의 좌표를 이동시키는 변환 (찌부시키기)
+    fill_mode='nearest',         # 10% 이동 시 한쪽은 소실, 한쪽은 가까이에 있던 부분의 이미지로 채워짐
+)
+
+augment_size = 8000   
+
+print(len(x_train_woman))      # 9489
+# x_train_woman = x_train_woman.reshape()
+
+randidx = np.random.randint(x_train_woman.shape[0], size = augment_size) 
+print(randidx)              
+print(np.min(randidx), np.max(randidx)) 
+
+# print(x_train[0].shape) 
+
+x_augmented = x_train_woman[randidx].copy() 
+y_augmented = y_train_woman[randidx].copy()
+
+print(x_augmented.shape)   
+print(y_augmented.shape)   
+
+x_augmented = x_augmented.reshape(
+    x_augmented.shape[0],      
+    x_augmented.shape[1],     
+    x_augmented.shape[2], 3)    
+
+print(x_augmented.shape)  
+
+x_augmented = train_datagen.flow(
+    x_augmented, y_augmented,
+    batch_size=augment_size,
+    shuffle=False,
+    save_to_dir="c:/AI5/_data/_save_img/06_men_women/"
+
+).next()[0]
+
+print(x_augmented.shape)   
+
+x_train = x_train.reshape(-1, 100, 100, 3)
+x_test = x_test.reshape(-1, 100, 100, 3)
+
+print(x_train.shape, x_test.shape)  # (24450, 100, 100, 3) (2717, 100, 100, 3)
+
 ## numpy에서 데이터 합치기
-
-
-x_train = np.concatenate((x_train, x_train1))
-y_train = np.concatenate((y_train, y_train1))
-# print(x_train.shape, y_train.shape)         # (32450, 100, 100, 3) (32450,)
+x_train = np.concatenate((x_train, x_augmented))
+y_train = np.concatenate((y_train, y_augmented))
+print(x_train.shape, y_train.shape)         # (32450, 100, 100, 3) (32450,)
 
 print(np.unique(y_train, return_counts=True))       # (array([0., 1.], dtype=float32), array([15885, 16565], dtype=int64)) <- 남자여자 데이터 불균형 맞춰짐 
 
-x_train, x_test, y_train, y_test = train_test_split(x_train, y_train, train_size=0.8, random_state=3115, )
 
+
+'''
 #2. 모델 구성
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=(100, 100, 3),activation='relu'))
@@ -119,7 +180,4 @@ print(y_pre)
 # loss : 0.5484941601753235
 # acc : 0.71181
 # 걸린 시간 : 221.64 초
-
-# loss : 0.19140301644802094
-# acc : 0.92408
-# 걸린 시간 : 265.09 초
+'''
