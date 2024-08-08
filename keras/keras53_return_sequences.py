@@ -22,7 +22,8 @@ print(x.shape)
 #2. 모델구성
 model = Sequential()
 # model.add(SimpleRNN(units=10, activation='relu', input_shape=(3,1)))   # 행무시 열우선 행7 뺌
-model.add(LSTM(units=16, activation='relu', input_shape=(3,1)))   # 통상적으로 LSTM 많이쓴다.
+model.add(LSTM(units=16, activation='relu', input_shape=(3,1), return_sequences=True))   # 통상적으로 LSTM 많이쓴다.
+model.add(LSTM(32))
 # model.add(GRU(units=10, activation='relu', input_shape=(3,1)))   
 
 # 데이터가 커질수록 성능이 좋아진다.
@@ -35,6 +36,20 @@ model.add(Dense(32,activation='relu'))
 model.add(Dense(16,activation='relu'))
 model.add(Dense(8,activation='relu'))
 model.add(Dense(1))
+
+model.summary()
+
+
+# 함수형
+# inp_layer1 = Input(shape=(1,))
+# m1 = Dense(1) (inp_layer1)
+
+# inp_layer2 = Input(shape=(1,))
+# m2 = Dense(1) (inp_layer2)
+
+# m3 = concatenate([m1,m2])
+# model = Model(inputs=[inp_layer1,inp_layer2],outputs=m3)
+
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', )

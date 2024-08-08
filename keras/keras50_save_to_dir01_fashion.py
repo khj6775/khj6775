@@ -58,6 +58,9 @@ x_augmented = train_datagen.flow(
 
 print(x_augmented.shape)     # (40000, 28, 28, 1) 변환된 데이터
 
+# 트레인 데이타젠에서 조절을 하여 이상해진 파일을 없애줘야 성능이 올라간다
+
+
 
 '''
 x_train = x_train.reshape(60000, 28, 28, 1)
