@@ -174,6 +174,6 @@ submit['T (degC)'] = result.reshape(144,1)
 submit.to_csv("C:\\ai5\\_save\\keras55\\jena_김호정.csv", index=False)
 
 
-# RMSE :  1.2593521040329536
+# RMSE :  1.259352104032953
 # 걸린시간 :  2202.020427942276 초
 
