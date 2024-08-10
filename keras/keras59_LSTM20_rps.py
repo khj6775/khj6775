@@ -165,5 +165,5 @@ print('accuracy_score :', r2)
 
 
 # LSTM
-# loss : 1.0976650714874268
+# loss : 1.097665071487426
 # acc : 0.33349
