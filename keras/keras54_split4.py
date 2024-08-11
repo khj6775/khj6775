@@ -40,7 +40,7 @@ x_train, x_test, y_train, y_test = train_test_split(x,
                                                     random_state=3752,
 )
 
-# exit()
+exit()
 #2. 모델구성
 model = Sequential()
 # model.add(SimpleRNN(units=10, activation='relu', input_shape=(3,1)))   # 행무시 열우선 행7 뺌

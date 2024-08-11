@@ -47,7 +47,7 @@ loss = model.evaluate(x_test, y_test)
 print('로스 : ', loss)
 
 y_predict = model.predict(x_test)
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error
 r2 = r2_score(y_test, y_predict)
 print("r2스코어 : ", r2)
 
@@ -55,3 +55,10 @@ print("r2스코어 : ", r2)
 # r2스코어 :  0.8577360922061708
 
 #R2 평가지표 1에 가까울수록 좋다.
+
+def RMSE(y_test, y_predict):
+    return np.sqrt(mean_squared_error(y_test, y_predict))
+
+rmse = RMSE(y_test, y_predict)    #  y_test, y_predict 매개변수
+
+print("RMSE : ", rmse)
