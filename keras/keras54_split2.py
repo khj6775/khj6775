@@ -22,8 +22,8 @@ print(bbb)
 print('---------------------------')
 print(bbb.shape)  
 
-x = bbb[:, :-1]
-y = bbb[:, -1,0]
+x = bbb[ : , :-1]      # bbb[모든행, 모든컬럼에서 제일뒤에한개빼고] 
+y = bbb[ : , -1, 0]
 print('---------------------------')
 print(x,y)
 print(x.shape, y.shape)     
