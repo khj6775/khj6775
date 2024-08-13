@@ -97,7 +97,6 @@ model.add(Conv2D(5, (2,2), ))   # 7, 7, 5
 model.add(Reshape(target_shape=(7 * 7 * 5, )))
 
 
-
 # model.add(Flatten())
 
 model.add(Dense(units=32, activation='relu'))

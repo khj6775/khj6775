@@ -6,7 +6,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, LSTM, Dropout
 from sklearn.preprocessing import LabelEncoder
 import time
@@ -18,7 +18,7 @@ start = time.time()
 os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
 # 데이터
-data = pd.read_csv(".\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
+data = pd.read_csv("C:\\ai5\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
 data = data.drop(["Date Time"], axis=1)
 print(data.shape) #(420551, 15)
 
@@ -57,50 +57,52 @@ print(x_test1.shape)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=231)
 
-#2. 모델 구성
-model = Sequential()
-model.add(LSTM(576, input_shape = (x.shape[1], x.shape[2])))
-model.add(Dense(576, activation='relu'))
-model.add(Dense(576, activation='relu'))
-model.add(Dense(288, activation='relu'))
-model.add(Dense(288, activation='relu'))
-model.add(Dense(288, activation='relu'))
-model.add(Dense(144))
+# #2. 모델 구성
+# model = Sequential()
+# model.add(LSTM(576, input_shape = (x.shape[1], x.shape[2])))
+# model.add(Dense(576, activation='relu'))
+# model.add(Dense(576, activation='relu'))
+# model.add(Dense(288, activation='relu'))
+# model.add(Dense(288, activation='relu'))
+# model.add(Dense(288, activation='relu'))
+# model.add(Dense(144))
 
-#3. 컴파일 및 훈련
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-model.compile(loss = 'mse', optimizer='adam')
+# #3. 컴파일 및 훈련
+# from keras.callbacks import EarlyStopping, ModelCheckpoint
+# model.compile(loss = 'mse', optimizer='adam')
 
-es = EarlyStopping(
-    monitor = 'val_loss',
-    mode = 'min',
-    patience=30,
-    restore_best_weights=True
-)
+# es = EarlyStopping(
+#     monitor = 'val_loss',
+#     mode = 'min',
+#     patience=30,
+#     restore_best_weights=True
+# )
 
-###### mcp 세이브 파일명 만들기 ######
-import datetime
-date = datetime.datetime.now()
-date = date.strftime("%m%d_%H%M")
+# ###### mcp 세이브 파일명 만들기 ######
+# import datetime
+# date = datetime.datetime.now()
+# date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras55/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k55_yena_', date, '_', filename])   
-#####################################
+path = 'C:/AI5/_save/keras55/'
+# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+# filepath = "".join([path, 'k55_yena_', date, '_', filename])   
+# #####################################
 
-mcp = ModelCheckpoint(
-    monitor='val_loss',
-    mode = 'auto',
-    verbose=1,
-    save_best_only=True,
-    filepath = filepath
-)
+# mcp = ModelCheckpoint(
+#     monitor='val_loss',
+#     mode = 'auto',
+#     verbose=1,
+#     save_best_only=True,
+#     filepath = filepath
+# )
 
-model.fit(x_train, y_train,
-          epochs=1000,
-          batch_size=1024,
-          validation_split=0.2,
-          callbacks=[es,mcp])
+# model.fit(x_train, y_train,
+#           epochs=1000,
+#           batch_size=1024,
+#           validation_split=0.2,
+#           callbacks=[es,mcp])
+
+model = load_model('C:/AI5/_save/keras55/k55_yena_0813_1150_0032-0.27930507.hdf5')
 
 #4. 예측 및 평가
 loss = model.evaluate(x_test, y_test)
@@ -114,7 +116,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 def RMSE(y_test, result):
     return np.sqrt(mean_squared_error(y_test, result))
  #  y_test, y_predict 매개변수
-rmse = RMSE(y_pre, result)
+rmse = RMSE(y_pre.values.reshape(1, 144), result)
 
 end = time.time()
 
@@ -122,7 +124,7 @@ print("RMSE : ", rmse)
 print("걸린시간 : ", end-start, '초')
 
 
-submit = pd.read_csv(".\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
+submit = pd.read_csv("C:\\AI5\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
 
 submit = submit[['Date Time','T (degC)']]
 submit = submit.tail(144)
@@ -135,5 +137,5 @@ submit['T (degC)'] = result.reshape(144,1)
 # print(submit)                  # [6493 rows x 1 columns]
 # print(submit.shape)            # (6493, 1)
 
-submit.to_csv(path + "jena_김호정_0811_2220.csv", index=False)
+submit.to_csv(path + "jena_김호정_0813_1157.csv", index=False)
 

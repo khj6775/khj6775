@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential, load_model
-from keras.layers import Dense, LSTM, Dropout, Flatten, BatchNormalization
+from keras.layers import Dense, LSTM, Dropout, Flatten, BatchNormalization, GRU
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import mean_squared_error
 import time
@@ -18,10 +18,18 @@ start = time.time()
 
 os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
-# 데이터
+# 1. 데이터
 data = pd.read_csv(".\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
 data = data.drop(["Date Time"], axis=1)
 print(data.shape) #(420551, 15)
+
+train_dt = pd.DatetimeIndex(data.index)
+
+data['day'] = train_dt.day
+data['month'] = train_dt.month
+data['year'] = train_dt.year
+data['hour'] = train_dt.hour
+data['dow'] = train_dt.dayofweek
 
 x = data.head(420407)
 y_pre = data.tail(144)["T (degC)"]
@@ -41,7 +49,7 @@ def split_x(data, size):
 x = split_x(x, size)
 y = split_x(y, size)
 
-x_test1 = x[-1].reshape(-1,144,13)  # 맨 마지막 x 로 평가  -1 = 맨마지막줄
+x_test1 = x[-1].reshape(-1,144,18)  # 맨 마지막 x 로 평가  -1 = 맨마지막줄
 # print(x)
 x = np.delete(x, -1, axis = 0)   # , 로 맨뒷줄 표현
 y = np.delete(y, 0, axis = 0)   # 0 = 첫번째줄
@@ -59,63 +67,76 @@ print(x_test1.shape)
 # # y = x[1]
 # # print(x.shape, y.shape) #(420264, 143, 13) (143, 13)
 
+
 # scaler = StandardScaler()
 # x = scaler.fit_transform(x.reshape(-1, x.shape[-1])).reshape(x.shape)
 # x_test1 = scaler.transform(x_test1.reshape(-1, x_test1.shape[-1])).reshape(x_test1.shape)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=231)
 
-# # 2. 모델구성
-# model = Sequential()
-# model.add(LSTM(144, input_shape = (x.shape[1], x.shape[2]),return_sequences=True))  
-# model.add(LSTM(144))
-# # Flatten()
-# model.add(Dense(144))
-# # model.add(Dense(64))
+# from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+# # scaler = MinMaxScaler()
+# # scaler = StandardScaler()
+# scaler = MaxAbsScaler()
+# # scaler = RobustScaler()
 
-# # model.add(Dense(128, activation='relu'))
+# # scaler.fit(x_train)
+# # x_train = scaler.transform(x_train)
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test)
 
-# model.add(Dense(144))
+
+# 2. 모델구성
+model = Sequential()
+model.add(GRU(144, input_shape = (x.shape[1], x.shape[2]),return_sequences=True))  
+model.add(GRU(144))
+# Flatten()
+model.add(Dense(144))
+# model.add(Dense(64))
+
+# model.add(Dense(128, activation='relu'))
+
+model.add(Dense(144))
 
 
-# #3. 컴파일 및 훈련
-# from keras.callbacks import EarlyStopping, ModelCheckpoint
+#3. 컴파일 및 훈련
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 
-# model.compile(loss = 'mse', optimizer='adam',)
-#             #   metrics = [tf.keras.metrics.RootMeanSquaredError(name='rmse')])
+model.compile(loss = 'mse', optimizer='adam',)
+            #   metrics = [tf.keras.metrics.RootMeanSquaredError(name='rmse')])
 
-# es = EarlyStopping(
-#     monitor = 'val_loss',
-#     mode = 'min',
-#     patience=40,
-#     restore_best_weights=True
-# )
+es = EarlyStopping(
+    monitor = 'val_loss',
+    mode = 'min',
+    patience=40,
+    restore_best_weights=True
+)
 
-# ###### mcp 세이브 파일명 만들기 ######
-# import datetime
-# date = datetime.datetime.now()
-# date = date.strftime("%m%d_%H%M")
+###### mcp 세이브 파일명 만들기 ######
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
 
-# path = './_save/keras55/'
-# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-# filepath = "".join([path, 'k55_yena_', date, '_', filename])   
-# #####################################
+path = './_save/keras55/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
+filepath = "".join([path, 'k55_yena_', date, '_', filename])   
+#####################################
 
-# mcp = ModelCheckpoint(
-#     monitor='val_loss',
-#     mode='auto',
-#     verbose=1,     
-#     save_best_only=True,   
-#     filepath=filepath, 
-# )
+mcp = ModelCheckpoint(
+    monitor='val_loss',
+    mode='auto',
+    verbose=1,     
+    save_best_only=True,   
+    filepath=filepath, 
+)
 
-# model.fit(x_train, y_train,
-#           epochs=3000,
-#           batch_size=1024,
-#           validation_split=0.2,
-#           callbacks=[es,mcp])
+model.fit(x_train, y_train,
+          epochs=3000,
+          batch_size=1024,
+          validation_split=0.2,
+          callbacks=[es,mcp])
 
-model = load_model('C:\\ai5\\_save\\keras55\\jena_김호정.hdf5')
+# model = load_model('C:\\ai5\\_save\\keras55\\jena_김호정.hdf5')
 
 #4. 예측 및 평가
 loss = model.evaluate(x_test, y_test)
