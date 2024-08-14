@@ -19,7 +19,7 @@ start = time.time()
 os.environ["TF_GPU_ALLOCATOR"] = "cuda_malloc_async"
 
 # 1. 데이터
-data = pd.read_csv(".\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
+data = pd.read_csv("C:\\ai5\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
 data = data.drop(["Date Time"], axis=1)
 print(data.shape) #(420551, 15)
 
@@ -53,6 +53,7 @@ x_test1 = x[-1].reshape(-1,144,18)  # 맨 마지막 x 로 평가  -1 = 맨마지
 # print(x)
 x = np.delete(x, -1, axis = 0)   # , 로 맨뒷줄 표현
 y = np.delete(y, 0, axis = 0)   # 0 = 첫번째줄
+
 # x = x[ :143, : ]  # 인덱싱
 # y = y[1:144, : ]
 
@@ -158,7 +159,7 @@ print("RMSE : ", rmse)
 print("걸린시간 : ", end-start, '초')
 
 
-submit = pd.read_csv(".\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
+submit = pd.read_csv("c:\\ai5\\_data\\kaggle\\jena\\jena_climate_2009_2016.csv")
 
 submit = submit[['Date Time','T (degC)']]
 submit = submit.tail(144)
