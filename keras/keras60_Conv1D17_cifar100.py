@@ -1,7 +1,7 @@
 import numpy as np
 from tensorflow.keras.datasets import mnist, fashion_mnist, cifar100
 import pandas as pd
-from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, LSTM, Reshape, Conv1D, Flatten
 import time
 from sklearn.model_selection import train_test_split

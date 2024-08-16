@@ -56,8 +56,8 @@ y = split_x(y, size)
 
 x_test1 = x[-1].reshape(-1,144,18)  # 맨 마지막 x 로 평가  -1 = 맨마지막줄
 # print(x)
-x = np.delete(x, -1, axis = 0)   # , 로 맨뒷줄 표현
-y = np.delete(y, 0, axis = 0)   # 0 = 첫번째줄
+x = np.delete(x, -144, axis = 0)   # , 로 맨뒷줄 표현
+y = np.delete(y, 144, axis = 0)   # 0 = 첫번째줄
 # x = x[ :143, : ]  # 인덱싱
 # y = y[1:144, : ]
 
@@ -132,9 +132,9 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras55/'
+path = './_save/keras61/DNN_jena'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
-filepath = "".join([path, 'k55_yena_', date, '_', filename])   
+filepath = "".join([path, 'k61_yena_', date, '_', filename])   
 #####################################
 
 mcp = ModelCheckpoint(
@@ -146,7 +146,7 @@ mcp = ModelCheckpoint(
 )
 
 model.fit(x_train, y_train,
-          epochs=30,
+          epochs=500,
           batch_size=1024,
           validation_split=0.2,
           callbacks=[es,mcp])
@@ -186,7 +186,7 @@ submit['T (degC)'] = result.reshape(144,1)
 # print(submit)                  # [6493 rows x 1 columns]
 # print(submit.shape)            # (6493, 1)
 
-# submit.to_csv("C:\\ai5\\_save\\keras55\\jena_김호정.csv", index=False)
+submit.to_csv("C:\\ai5\\_save\\keras55\\jena_김호정.csv", index=False)
 
 
 # RMSE :  1.259352104032953

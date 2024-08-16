@@ -109,6 +109,6 @@ print('acc_score :', accuracy_score)
 # acc_score : 1.0
 
 # LSTM
-# loss : 0.6879040598869324
+# loss : 0.687904059886932
 # acc : 0.5316
 # 걸린 시간 : 18.67

@@ -81,7 +81,7 @@ import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-path = './_save/keras62/'
+path = './_save/keras62/ensemble4'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
 filepath = "".join([path, 'k62_', date, '_', filename])   
 #####################################
