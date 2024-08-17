@@ -137,8 +137,14 @@ x1_train, x1_test, x2_train, x2_test, x3_train, x3_test, y_train, y_test = train
     x3_datasets,
     y,
     train_size = 0.9,
-    random_state = 7777
+    random_state =7777
 )
+
+print(x1_train.shape)
+print(x2_train.shape)
+print(x3_train.shape)
+print(y.shape)
+# exit()
 
 x1_train = x1_train.reshape(-1, PREDICT_DAYS, FEATURE, 1)
 x2_train = x2_train.reshape(-1, PREDICT_DAYS, FEATURE, 1)
