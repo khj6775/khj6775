@@ -9,7 +9,7 @@ from sklearn.metrics import r2_score
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.metrics import RootMeanSquaredError
 
-PATH_CSV = "C:/ai5/_data/중간고사데이터/"
+read_csv = "C:/ai5/_data/중간고사데이터/"
 
 #1 data
 #=================================================================
@@ -31,7 +31,7 @@ CUT_DAYS = 948
 PREDICT_DAYS = 2
 FEATURE = 12
 # -------------------------------------------------------------------------------------------------
-x1_datasets = pd.read_csv(PATH_CSV + "NAVER 240816.csv", index_col = 0, thousands = ",") # 네이버
+x1_datasets = pd.read_csv(read_csv + "NAVER 240816.csv", index_col = 0, thousands = ",") # 네이버
 
 x1_datasets = x1_datasets.drop(['전일비', '신용비', '개인', '기관', '외인(수량)', '외국계', '프로그램', '외인비'], axis = 1)
 
@@ -58,7 +58,7 @@ x1_datasets[0, 7] = 128666.0
 
 x1_datasets = x1_datasets[::-1]
 # -------------------------------------------------------------------------------------------------
-x2_datasets = pd.read_csv(PATH_CSV + "하이브 240816.csv", index_col = 0, thousands = ",") # 하이브
+x2_datasets = pd.read_csv(read_csv + "하이브 240816.csv", index_col = 0, thousands = ",") # 하이브
 
 x2_datasets = x2_datasets.drop(['전일비', '신용비', '개인', '기관', '외인(수량)', '외국계', '프로그램', '외인비'], axis = 1)
 
@@ -83,7 +83,7 @@ x2_datasets[0, 7] = 31347.0
 
 x2_datasets = x2_datasets[::-1]
 # -------------------------------------------------------------------------------------------------
-x3_datasets = pd.read_csv(PATH_CSV + "성우하이텍 240816.csv", index_col = 0, thousands = ",") # 성우하이텍
+x3_datasets = pd.read_csv(read_csv + "성우하이텍 240816.csv", index_col = 0, thousands = ",") # 성우하이텍
 
 x3_datasets = x3_datasets.drop(['전일비', '신용비', '개인', '기관', '외인(수량)', '외국계', '프로그램', '외인비'], axis = 1)
 
@@ -150,7 +150,7 @@ x1_train = x1_train.reshape(-1, PREDICT_DAYS, FEATURE, 1)
 x2_train = x2_train.reshape(-1, PREDICT_DAYS, FEATURE, 1)
 x3_train = x3_train.reshape(-1, PREDICT_DAYS, FEATURE, 1)
 
-
+'''
 #2-1 model
 input01 = Input(shape = (PREDICT_DAYS, FEATURE, 1))
 
@@ -234,10 +234,10 @@ hist = model.fit(
     batch_size = 128,
     epochs = 10000
 )
-
+'''
 
 #4 predict
-# model = load_model("C:/ai5/_save/중간고사가중치/keras63_99_성우하이텍_김호정.hdf5")
+model = load_model("C:/ai5/_save/중간고사가중치/keras63_99_성우하이텍_김호정.hdf5")
 
 eval = model.evaluate([x1_test, x2_test, x3_test], y_test)
 
@@ -245,6 +245,6 @@ print("loss :", eval)
 
 results = model.predict([x1_pred, x2_pred, x3_pred])
 
-print("성우하이텍 8월19일 종가 :", np.round(results))
+print("성우하이텍 8월19일 종가 :", results)
 
-# 성우하이텍 8월19일 종가 : [[7420.]]
+# 우하이텍 8월19일 종가 : [[7419.532]]
