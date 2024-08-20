@@ -46,7 +46,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 padded_x = pad_sequences(x,
                         # padding = 'pre', 'post',         # (디폴트) 앞에 0 / 뒤에 0 채우기
                         maxlen = 9,                      # n개로 자르기, 앞에가 잘림 
-                        # truncating = 'pre', 'post,'      # 앞에서 / 뒤에서 부터 자르기                         
+                        truncating = 'pre' # , 'post'      # 앞에서 / 뒤에서 부터 자르기                         
                          )
 print(padded_x)
 print(padded_x.shape)   # (20, 9)
