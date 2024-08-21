@@ -13,13 +13,8 @@ print(x.shape, y.shape)     # (150, 4) (150,)
 scaler = StandardScaler()
 x = scaler.fit_transform(x)
 
-for i in range(4, 0, -1):
- pca = PCA(n_components=i)
+pca = PCA(n_components=3)   # 4개가 3개가 된다.
 x = pca.fit_transform(x)
-
-
-# pca = PCA(n_components=1)   # 4개가 3개가 된다.
-# x = pca.fit_transform(x)
 
 # 통상적으로 스켈일링을 먼저하고 PCA를 한다.
 
