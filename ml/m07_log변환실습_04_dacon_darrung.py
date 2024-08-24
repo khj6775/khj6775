@@ -58,11 +58,11 @@ print(x)        #[1328 rows x 9 columns]
 y = train_csv['count']         # 'count' 컬럼만 넣어주세요
 print(y.shape)   # (1328,)
 
-train_csv.boxplot()    
-train_csv.plot.box()
-plt.show()
+# train_csv.boxplot()    
+# train_csv.plot.box()
+# plt.show()
 
-exit()
+# exit()
 
 # print(df.info())
 # print(df.describe())
@@ -78,21 +78,20 @@ exit()
 # df['target'].hist(bins=50)
 # plt.show()
 
-# exit()
 
-x = df.drop(['target'], axis=1).copy()
-y = df['target']
+# x = df.drop(['target'], axis=1).copy()
+# y = df['target']
 
 ###################### x의 Population 로그 변환 ##############################
-# x['CRIM'] = np.log1p(x['CRIM'])  # 지수변환 np.expm1
+x['hour_bef_pm10'] = np.log1p(x['hour_bef_pm10'])  # 지수변환 np.expm1
 # x['ZN'] = np.log1p(x['ZN'])  # 지수변환 np.expm1
 # x['B'] = np.log1p(x['B'])  # 지수변환 np.expm1
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, shuffle = True, train_size = 0.8, random_state=333)
 
 #################### y 로그 변환 #########################
-y_train = np.log1p(y_train)
-y_test = np.log1p(y_test)
+# y_train = np.log1p(y_train)
+# y_test = np.log1p(y_test)
 ##########################################################
 
 # 2. 모델구성
@@ -117,13 +116,13 @@ print(r2)
 # RF
 
 # 안변환
-# score : 0.39775663277051343
+# score : 0.7390281297387244
 
 # x만 로그변환
-# score :  
+# score :  0.7388832132851265
 
 # y만 로그변환
-# score :  0.4030610594913886
+# score :  0.7754562395050534
 
 # x,y 둘다 로그 변환
-# score : 
+# score : 0.775369296561232
