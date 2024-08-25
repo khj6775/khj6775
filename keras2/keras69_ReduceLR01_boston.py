@@ -43,7 +43,6 @@ rlr = ReduceLROnPlateau(monitor='val_loss', mode='auto',
                         patience=20, verbose=1,
                         factor=0.8,)   # factor = lr 줄여주는 비율
 
-
 from tensorflow.keras.optimizers import Adam
 
 learning_rate = 0.005      # default = 0.001
