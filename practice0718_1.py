@@ -80,6 +80,6 @@ print("r2 스코어:", r2)
 print(test_csv.shape)
 y_submit = model.predict(test_csv)
 print(y_submit)
-print(y_submit,shape)
+print(y_submit.shape)
 
 print("test_csv타입 :", )
