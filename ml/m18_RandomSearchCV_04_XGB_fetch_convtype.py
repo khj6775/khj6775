@@ -39,17 +39,17 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 parameters =[
-   {'n_jobs' : [-1,], 'n_estimators' : [100, 500], 'max_depth' : [4,8,10,12],
-     'min_samples_leaf' : [3,5, 10], 'tree_method' : ['gpu_hist'], 'learning_rate' : [0.002] },
-    {'n_jobs' : [-1,], 'max_depth' : [6,10,12], 'learning_rate' : [0.003],
-     'min_samples_leaf' : [3,5,9,10],  'tree_method' : ['gpu_hist']}, 
-     {'n_jobs' : [-1,], 'min_samples_leaf' : [3,7,10], 'learning_rate' : [0.004],
-     'min_samples_split' : [2,3,8,10], 'tree_method' : ['gpu_hist']},
-     {'n_jobs' : [-1,], 'min_samples_leaf' : [2,8,10], 'tree_method' : ['gpu_hist'], 'learning_rate' : [0.005]},
+   {'n_jobs' : [-1,], 'n_estimators' : [100,250, 500], 'max_depth' : [4,8,10,12],
+     'min_samples_leaf' : [3,5, 10], 'tree_method' : ['gpu_hist'], 'learning_rate' : [0.002] }, # 36
+    {'n_jobs' : [-1,], 'max_depth' : [6,10,12], 'learning_rate' : [0.003,0.008],
+     'min_samples_leaf' : [3,5,9,10],  'tree_method' : ['gpu_hist']},  # 24
+     {'n_jobs' : [-1,], 'min_samples_leaf' : [3,7,9,10], 'learning_rate' : [0.004,0.007],
+     'min_samples_split' : [3,6,8,10], 'tree_method' : ['gpu_hist']}, # 32
+     {'n_jobs' : [-1,], 'min_samples_leaf' : [2,4,6,8,10], 'tree_method' : ['gpu_hist'], 'learning_rate' : [0.005,0.006,0.009]}, # 15
 ]   # 48
 
 n_splits=5
-kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=3333)
+kfold = KFold(n_splits=n_splits, shuffle=True, random_state=3333)
 
 #2. 모델
 model = RandomizedSearchCV(xgb.XGBClassifier(), parameters, cv=kfold,
@@ -84,4 +84,3 @@ y_pred_best = model.best_estimator_.predict(x_test)     # 둘이 같은거니까
 print('최적 튠 acc : ', accuracy_score(y_test, y_pred_best))
 
 print('걸린시간 : ', round(end_time - start_time, 2), '초')
-
