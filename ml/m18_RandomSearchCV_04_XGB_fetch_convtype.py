@@ -84,3 +84,21 @@ y_pred_best = model.best_estimator_.predict(x_test)     # 둘이 같은거니까
 print('최적 튠 acc : ', accuracy_score(y_test, y_pred_best))
 
 print('걸린시간 : ', round(end_time - start_time, 2), '초')
+
+# 최적의 매개변수 :  XGBClassifier(base_score=None, booster=None, callbacks=None,
+#               colsample_bylevel=None, colsample_bynode=None,
+#               colsample_bytree=None, device=None, early_stopping_rounds=None,
+#               enable_categorical=False, eval_metric=None, feature_types=None,
+#               gamma=None, grow_policy=None, importance_type=None,
+#               interaction_constraints=None, learning_rate=0.002, max_bin=None,
+#               max_cat_threshold=None, max_cat_to_onehot=None,
+#               max_delta_step=None, max_depth=10, max_leaves=None,
+#               min_child_weight=None, min_samples_leaf=5, missing=nan,
+#               monotone_constraints=None, multi_strategy=None, n_estimators=500,
+#               n_jobs=-1, num_parallel_tree=None, ...)
+# 최적의 파라미터 :  {'tree_method': 'gpu_hist', 'n_jobs': -1, 'n_estimators': 500, 'min_samples_leaf': 5, 'max_depth': 10, 'learning_rate': 0.002}
+# best_score :  0.6635306120430655
+# model.score :  0.6649398036195279
+# acc_score :  0.6649398036195279
+# 최적 튠 acc :  0.6649398036195279
+# 걸린시간 :  905.61 초
