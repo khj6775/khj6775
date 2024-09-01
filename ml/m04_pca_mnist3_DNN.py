@@ -35,7 +35,7 @@ x_train = x_train/255.
 x_test = x_test/255.
 
 from sklearn.preprocessing import OneHotEncoder
-ohe = OneHotEncoder(sparse=False)
+ohe = OneHotEncoder(sparse_output=False)
 y_train = y_train.reshape(-1,1)
 y_test = y_test.reshape(-1,1)
 y_train = ohe.fit_transform(y_train)
