@@ -16,8 +16,6 @@ x_train, x_test, y_train, y_test = train_test_split(
     stratify=y,
 )
 
-
-
 #2. 모델구성
 model1 = DecisionTreeClassifier(random_state=random_state)
 model2 = RandomForestClassifier(random_state=random_state)
