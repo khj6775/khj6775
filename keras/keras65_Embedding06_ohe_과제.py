@@ -124,11 +124,8 @@ x_pre = x_pre.reshape(1,9,48)
 print(x_pre.shape)  # (1, 9, 48)
 
 y_pre = model.predict(x_pre)
-print("곧가을이와요 : ", np.round(y_pre))
+print("곧 가을이 와요 : ", np.round(y_pre))
 
 print("걸린 시간 :", round(end-start,2),'초')
 
-# loss : 2.5991172790527344
-# acc : 0.5
-# 태운이 참 재미없다 의 결과 : [[1.]]
-# 걸린 시간 : 5.3 초
+
