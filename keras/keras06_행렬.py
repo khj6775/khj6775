@@ -26,6 +26,3 @@ print("x8 = ", x8.shape)
 
 x9 = np.array([[[[1]]],[[[2]]]])    # x9 :  (2, 1, 1, 1)
 print("x9 : ", x9.shape)
-
-#123
-
