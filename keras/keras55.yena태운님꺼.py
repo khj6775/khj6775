@@ -1,7 +1,7 @@
 # https://www.kaggle.com/datasets/stytch16/jena-climate-2009-2016/code
 # y는 (degC)로 잡아라
 # 자르는 거 맘대로, 조건)pre = 2016.12.31 00:10부터 1.1까지 예측
-# 144개
+# 144개.
 
 import numpy as np
 import pandas as pd
