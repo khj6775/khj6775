@@ -56,5 +56,5 @@ r2 = r2_score(y_test, y_predict)
 print('lr : {0}, r2 : {1}'.format(learning_rate, r2))
 
 # 로스 :34.1452751159668
-# r2 : 0.6363504485311872
+# r2 : 0.636350448531187
 
