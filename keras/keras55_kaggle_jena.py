@@ -10,8 +10,6 @@ Data = 'C:/AI5/_data/kaggle/jena/jena_climate_2009_2016.csv'
 
 a = pd.read_csv(Data , index_col=0)
 
-
-
 size = 720
 
 def split_x(dataset, size):
