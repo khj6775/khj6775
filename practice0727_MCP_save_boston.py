@@ -89,7 +89,7 @@ path = './_save/keras30_mcp/01_boston/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'    # 1000-0.7777.hdf5    { } = dictionary, 키와 밸류  d는 정수, f는 소수
 filepath = "".join([path, 'k30_', date, '_', filename])      # 파일위치와 이름을 에포와 발로스로 나타내준다
 # 생성 예 : ""./_save/keras29_mcp/k29_1000-0.7777.hdf5"
-##################### MCP 세이브 파일명 만들기 끝 ###########################
+##################### MCP 세이브 파일명 만들기 끝 ##########################
 
 mcp = ModelCheckpoint(
     monitor='val_loss',
