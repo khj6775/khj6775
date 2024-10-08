@@ -35,6 +35,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.01)
 def train(model, criterion, optimizer, x, y):
     # model.train()         # 훈련모드
     optimizer.zero_grad()   # 각 배치마다 기울기를 초기화하여, 기울기 누적에 의한 문제 해결.
+                            # 데이터가 100개, 배치가 10 이면 1000번 에포가 돈다.
 
     hypothesis = model(x)   # y = wx + b
 
