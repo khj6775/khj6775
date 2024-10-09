@@ -28,7 +28,7 @@ print(test_csv.info())
 
 print(train_csv.describe().T)
 
-############## 결측치 확인 #############
+############## 결측치 확인 ##############
 print(train_csv.isna().sum())
 print(train_csv.isnull().sum())
 print(test_csv.isna().sum())
