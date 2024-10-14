@@ -110,7 +110,7 @@ accuracy_score = accuracy_score(y_test, y_predict)
 
 # accuracy_score = accuracy_score(y_test.cpu().numpy(), np.round(y_predict.detach().cpu().numpy()))
 print('acc_score :', accuracy_score)
-print('acc_score : , {:.4f}'.format(accuracy_score))
+print('acc_score : {:.4f}'.format(accuracy_score))
 
 
 # 최종 loss :  0.6060349345207214

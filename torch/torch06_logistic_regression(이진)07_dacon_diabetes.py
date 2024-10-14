@@ -10,9 +10,8 @@ from sklearn.metrics import accuracy_score
 
 USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if USE_CUDA else 'cpu')
-print('troch : ', torch.__version__, '사용DEVICE : ', DEVICE)
+print('torch : ', torch.__version__, '사용DEVICE : ', DEVICE)
 
-#1. 데이터
 #1. 데이터
 path = 'C:/AI5/_data/dacon/diabetes/'
 

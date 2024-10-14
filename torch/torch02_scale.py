@@ -60,7 +60,7 @@ def train(model, criterion, optimizer, x, y):
 
     return loss.item()
 
-epochs = 2000
+epochs = 100
 
 for epoch in range(1, epochs + 1):
     loss = train(model, criterion, optimizer, x, y)
