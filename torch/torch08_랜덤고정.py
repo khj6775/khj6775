@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from sklearn.datasets import load_wine
+from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
@@ -11,18 +11,30 @@ USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if USE_CUDA else 'cpu')
 print('troch : ', torch.__version__, '사용DEVICE : ', DEVICE)
 
+# 파이선, 넘파이, 텐서 or 토치 랜덤시드 고정.
+SEED = 0    # 기본값
+
+import random
+random.seed(SEED)   # 파이썬 랜덤 고정
+np.random.seed(SEED)    # 넘파이 랜덤 고정
+## 토치 시드 고정
+torch.manual_seed(SEED)
+## 토치 쿠다 시드 고정
+torch.cuda.manual_seed(SEED) 
+
+
 #1.데이터
-datasets = load_wine()
+datasets = load_iris()
 x = datasets.data
 y = datasets.target
 
 # x = torch.FloatTensor(x)
 # y = torch.LongTensor(y)     # 0,1,2 int 이므로 LongTensor
-print(x.shape, y.shape)     # torch.Size([178, 13]) torch.Size([178])
+# print(x.shape, y.shape)     # torch.Size([150, 4]) torch.Size([150])
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y,
-    train_size=0.75, shuffle=True, random_state=0,
+    train_size=0.75, shuffle=True, random_state=SEED,
     stratify=y,                                                    
 )
 
@@ -37,7 +49,7 @@ y_test = torch.LongTensor(y_test).to(DEVICE)
 
 #2. 모델
 model = nn.Sequential(
-    nn.Linear(13, 32),
+    nn.Linear(4, 32),
     nn.ReLU(),
     nn.Linear(32, 32),
     nn.ReLU(),
@@ -92,8 +104,8 @@ y_predict = torch.argmax(model(x_test), 1)
 print(y_predict[:5])
 
 score = (y_predict == y_test).float().mean()
-print('accuracy : {:.4f}'.format(score))    
-print(f'accuracy : {score:.4f}')           
+print('accuracy : {:.4f}'.format(score))    # accuracy : 0.9211
+print(f'accuracy : {score:.4f}')            # accuracy : 0.9211
 
 score2 = accuracy_score(y_test.cpu().numpy(),
                         y_predict.cpu().numpy())
@@ -109,5 +121,3 @@ accuracy_score = accuracy_score(y_test, y_predict)
 # accuracy_score = accuracy_score(y_test.cpu().numpy(), np.round(y_predict.detach().cpu().numpy()))
 print('acc_score :', accuracy_score)
 # print('acc_score : , {:.4f}'.format(accuracy_score))
-
-# acc_score : 0.9777777777777777

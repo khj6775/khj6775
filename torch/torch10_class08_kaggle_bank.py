@@ -77,25 +77,13 @@ print(pd.DataFrame(y).value_counts())
 # 1      228
 pd.value_counts(y)
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.8,
-                                                    random_state=1186)
-
-
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
-# scaler = MinMaxScaler()
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, train_size=0.7, shuffle=True, random_state=369,
+    stratify=y,
+    )
 scaler = StandardScaler()
-# scaler = MaxAbsScaler()
-# scaler = RobustScaler()
-
-scaler.fit(x_train)
-x_train = scaler.transform(x_train)
+x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
-
-# print('x_train :', x_train)
-# print(np.min(x_train), np.max(x_train))
-# print(np.min(x_test), np.max(x_test))
 
 x_train = torch.FloatTensor(x_train).to(DEVICE)
 x_test = torch.FloatTensor(x_test).to(DEVICE)
@@ -121,23 +109,47 @@ print(type(x_train), type(y_train))
 # torch.Size([398, 1]) torch.Size([171, 1])
 # <class 'torch.Tensor'> <class 'torch.Tensor'>
 
-# exit()
-
 #2. 모델구성
-model = nn.Sequential(
-    nn.Linear(10, 64),
-    # nn.ReLU(),
-    nn.Linear(64, 32),
-    nn.ReLU(),
-    # nn.Linear(32, 32),
-    # nn.ReLU(),
-    nn.Linear(32, 16),
-    nn.ReLU(),
-    nn.Linear(16, 1),
-    # nn.ReLU(),
-    nn.Sigmoid()
+# model = nn.Sequential(
+#     nn.Linear(30, 64),
+#     nn.ReLU(),
+#     nn.Linear(64, 32),
+#     nn.ReLU(),
+#     nn.Linear(32, 32),
+#     nn.ReLU(),
+#     nn.Linear(32, 16),
+#     nn.Linear(16, 1),
+#     nn.Sigmoid()
+# ).to(DEVICE)
 
-).to(DEVICE)
+class Model(nn.Module):                         # 클래스 정의
+    def __init__(self, input_dim, output_dim):  # input_dim, output_dim 받아들이는 인자
+        # super().__init__()  # 디폴트 # nn.Module 에 있는걸 다 쓰겠다
+        super(Model, self).__init__()   # 아빠
+        self.linear1 = nn.Linear(input_dim, 64)
+        self.linear2 = nn.Linear(64,32)
+        self.linear3 = nn.Linear(32,32)
+        self.linear5 = nn.Linear(16,output_dim)
+        self.linear4 = nn.Linear(32,16)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+        self.dropout = nn.Dropout(0.2)
+    
+    # 순전파 !!!
+    def forward(self, input_size):
+        x = self.linear1(input_size)
+        x = self.relu(x)
+        x = self.linear2(x)
+        x = self.relu(x)
+        x = self.linear3(x)
+        x = self.relu(x)
+        x = self.linear4(x)
+        x = self.linear5(x)
+        x = self.sigmoid(x)
+        return x
+    
+# 클래스를 인스턴스 화 한다.
+model = Model(10, 1).to(DEVICE)
 
 #3. 컴파일, 훈련
 criterion = nn.BCELoss()
@@ -154,7 +166,7 @@ def train(model, criterion, optimizer, x, y):
     optimizer.step()    # 가중치(w) 갱신               # 역전파 끝
     return loss.item()
 
-epochs = 500
+epochs = 200
 for epoch in range(1, epochs + 1):
     loss = train(model, criterion, optimizer, x_train, y_train)
     print('epoch: {}, loss: {}'.format(epoch, loss))        #verbose
@@ -168,7 +180,7 @@ def evaluate(model, criterion, x, y):
                     # 드롭아웃, 배치노멀 <- 얘네들 몽땅 하지마!!!
     with torch.no_grad():
         y_predict = model(x)
-        loss2 = criterion(y, y_predict)
+        loss2 = criterion(y_predict, y)
     return loss2.item()
 
 last_loss = evaluate(model, criterion, x_test, y_test)
@@ -182,11 +194,13 @@ y_predict = model(x_test)
 y_predict = np.round(y_predict.detach().cpu().numpy())
 y_test = y_test.cpu().numpy()
 
+
 accuracy_score = accuracy_score(y_test, y_predict)
 
-# accuracy_score = accuracy_score(y_test.cpu().numpy(), np.round(y_predict.detach().cpu().numpy()))
-# print('acc_score :', accuracy_score)
-print('acc_score : , {:.4f}'.format(accuracy_score))
 
-# 최종 loss :  19.68362045288086
-# acc_score : , 0.8638
+# accuracy_score = accuracy_score(y_test.cpu().numpy(), np.round(y_predict.detach().cpu().numpy()))
+print('acc_score :', accuracy_score)
+print('acc_score : {:.4f}'.format(accuracy_score))
+
+# 최종 loss :  19.32361602783203
+# acc_score : 0.8641514006988346

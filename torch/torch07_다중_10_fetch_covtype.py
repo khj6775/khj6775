@@ -11,6 +11,15 @@ USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if USE_CUDA else 'cpu')
 print('troch : ', torch.__version__, '사용DEVICE : ', DEVICE)
 
+SEED = 5
+import random
+random.seed(SEED)   # 파이썬 랜덤 고정
+np.random.seed(SEED)    # 넘파이 랜덤 고정
+## 토치 시드 고정
+torch.manual_seed(SEED)
+## 토치 쿠다 시드 고정
+torch.cuda.manual_seed(SEED) 
+
 #1.데이터
 datasets = fetch_covtype()
 x = datasets.data
@@ -22,7 +31,7 @@ print(x.shape, y.shape)     # torch.Size([581012, 54]) torch.Size([581012])
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(x, y,
-    train_size=0.75, shuffle=True, random_state=1004,
+    train_size=0.75, shuffle=True, random_state=SEED,
     stratify=y,                                                    
 )
 
@@ -61,7 +70,7 @@ def train(model, criterion, optimizer, x_train, y_train):
     optimizer.step()
     return loss.item()
 
-EPOCHS = 1000   # 특정 고정 상수의 변수는 대문자를 쓴다
+EPOCHS = 200   # 특정 고정 상수의 변수는 대문자를 쓴다
 for epoch in range(1, EPOCHS+1):
     loss = train(model, criterion, optimizer, x_train, y_train)
     # print('epoch: {}, loss : {:.8f}'.format(epoch, loss))
