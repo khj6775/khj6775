@@ -43,7 +43,7 @@ print(x_train.shape, x_test.shape)
 print(y_train.shape, y_test.shape)
 print(type(x_train), type(y_train))
 
-# ========================================================
+# =======================================================
 # torch.Size([398, 30]) torch.Size([171, 30])
 # torch.Size([398, 1]) torch.Size([171, 1])
 # <class 'torch.Tensor'> <class 'torch.Tensor'>
