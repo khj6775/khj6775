@@ -92,7 +92,6 @@ print(aaa[0][1])
 
 
 
-
 class Model(nn.Module):                         # 클래스 정의
     def __init__(self, input_dim, output_dim):  # input_dim, output_dim 받아들이는 인자
         # super().__init__()  # 디폴트 # nn.Module 에 있는걸 다 쓰겠다
@@ -131,8 +130,8 @@ def train(model, criterion, optimizer, loader):
     # model.train()     # 훈련모드, 디폴트
     total_loss = 0
     
-    for x_batch, y_batch in loader:
-        optimizer.zero_grad()           # 전부 배치 단위로 돌린다
+    for x_batch, y_batch in loader:     # 전부 배치 단위로 돌린다 
+        optimizer.zero_grad()          
         hypothesis = model(x_batch)
         loss = criterion(hypothesis, y_batch)
 
@@ -151,7 +150,7 @@ print("============================================")
 #4. 평가, 예측
 # loss = model.evaluate(x, y)
 def evaluate(model, criterion, loader):
-    model.eval()    # 평가모드 // 역잔파, 가중치 갱신, 기울기 계산할수 있기도 없기도,
+    model.eval()    # 평가모드 // 역전파, 가중치 갱신, 기울기 계산할수 있기도 없기도,
                     # 드롭아웃, 배치노멀 <- 얘네들 몽땅 하지마!!!
     total_loss=0
     for x_batch, y_batch in loader:
