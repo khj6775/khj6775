@@ -48,7 +48,7 @@ print(test2_csv.info())
 
 print(train_csv.describe().T)   # describe 평균,중위값 등등 나타냄. 많이쓴다.
 
-############### 결측치 확인 #################
+############### 결측치 확인 ################
 print(train_csv.isna().sum())
 print(train_csv.isnull().sum())
 print(test2_csv.isna().sum())             # 전부 결측치 없음 확인
