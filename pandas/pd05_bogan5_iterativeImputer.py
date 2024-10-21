@@ -22,7 +22,7 @@ from sklearn.impute import IterativeImputer
 # from sklearn.experimental import enable_iterative_imputer
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
-from xgboost import XGBRegressor
+# from xgboost import XGBRegressor
 
 imputer = IterativeImputer()     # 디폴트 BayesianRidge 회귀모델.
 data1 = imputer.fit_transform(data)
@@ -36,6 +36,6 @@ imputer = IterativeImputer(estimator=RandomForestRegressor())
 data3 = imputer.fit_transform(data)
 print(data3)
 
-imputer = IterativeImputer(estimator=XGBRegressor())
-data4 = imputer.fit_transform(data)
-print(data4)
+# imputer = IterativeImputer(estimator=XGBRegressor())
+# data4 = imputer.fit_transform(data)
+# print(data4)

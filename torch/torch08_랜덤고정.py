@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 
 USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device('cuda' if USE_CUDA else 'cpu')
-print('troch : ', torch.__version__, '사용DEVICE : ', DEVICE)
+print('torch : ', torch.__version__, '사용DEVICE : ', DEVICE)
 
 # 파이선, 넘파이, 텐서 or 토치 랜덤시드 고정.
 SEED = 0    # 기본값
