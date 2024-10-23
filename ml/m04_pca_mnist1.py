@@ -9,7 +9,7 @@ print(x_train.shape, x_test.shape)  # (60000, 28, 28) (10000, 28, 28)
 x = np.concatenate([x_train, x_test], axis=0)
 print(x.shape)  # (70000, 28, 28)
 
-##### [실습] #####
+###### [실습] ######
 # PCA를 통해 0.95 이상인 n_components는 몇개?
 # 0.95 이상
 # 0.99 이상
