@@ -89,7 +89,7 @@ for i in range(len(num)):
     path = './_save/ml05/15_fashion/'
     filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
     filepath = "".join([path, 'ml05_', str(i+1), '_', date, '_', filename])   
-    ####################################
+    ######################################
 
     mcp = ModelCheckpoint(
         monitor='val_loss',
