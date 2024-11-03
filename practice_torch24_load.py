@@ -132,5 +132,5 @@ print('R2: ', r2)
 print('total_loss: ', total_loss.item())
 
 
-# R2:  0.977220112785449
+# R2:  0.97722011278544
 # total_loss:  0.0021771183237433434
