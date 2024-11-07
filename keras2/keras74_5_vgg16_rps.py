@@ -61,7 +61,7 @@ vgg16 = VGG16(#weights='imagenet',
               include_top=False,          
               input_shape=(100, 100, 3))    
 
-vgg16.trainable=True
+vgg16.trainable=False
 
 model = Sequential()
 model.add(vgg16)
@@ -89,7 +89,7 @@ es = EarlyStopping(
     restore_best_weights=True
 )
 
-model.fit(x_train, y_train, epochs=1000, batch_size=256,
+model.fit(x_train, y_train, epochs=100, batch_size=64,
           verbose=1,
           validation_split=0.1,
           callbacks=[es]
@@ -115,3 +115,8 @@ print('acc_score :', accuracy_score)
 # acc_score : 0.998015873015873
 
 # True
+# loss : 1.0425083637237549
+# acc : 0.4405
+# acc_score : 0.44047619047619047
+
+# False
