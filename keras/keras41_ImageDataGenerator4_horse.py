@@ -79,7 +79,7 @@ start = time.time()
 es = EarlyStopping(
     monitor='val_loss',
     mode='min',
-    patience=60,
+    patience=30,
     restore_best_weights=True
 )
 
@@ -98,7 +98,7 @@ print('acc :',round(loss[1],4))
 y_pre = model.predict(x_test)
 
 y_pre = np.argmax(y_pre, axis=1).reshape(-1,1)
-y_test = np.argmax(y_test, axis=1).reshape(-1,1)
+# y_test = np.argmax(y_test, axis=1).reshape(-1,1)
 
 accuracy_score = accuracy_score(y_test,np.round(y_pre))
 print('acc_score :', accuracy_score)
