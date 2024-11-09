@@ -50,9 +50,9 @@ vgg16.trainable=True
 model = Sequential()
 model.add(vgg16)
 model.add(Flatten())
-model.add(Dense(128))
-model.add(Dense(64))
-model.add(Dense(1, activation='softmax'))
+model.add(Dense(100))
+model.add(Dense(100))
+model.add(Dense(1, activation='sigmoid'))
 
 model.summary()
 
@@ -66,7 +66,7 @@ es = EarlyStopping(
     restore_best_weights=True
 )
 
-model.fit(x_train, y_train, epochs=1000, batch_size=128,
+model.fit(x_train, y_train, epochs=1000, batch_size=30,
           verbose=1,
           validation_split=0.2,
           callbacks=[es]
@@ -105,3 +105,8 @@ print('acc_score :', accuracy_score)
 # acc_score : 0.470873786407767
 
 # True
+# loss : 0.015368040651082993
+# acc : 0.5291
+# acc_score : 0.470873786407767
+
+###### batch_size 변경후 성능 향상!!!!!!!!
