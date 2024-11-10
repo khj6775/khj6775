@@ -162,8 +162,8 @@ y_pre = model.predict(x_test)
 print("걸린 시간 :", round(end-start,2),'초')
 
 y_pre = np.round(y_pre)
-r2 = accuracy_score(y_test, y_pre)
-print('accuracy_score :', r2)
+acc = accuracy_score(y_test, y_pre)
+print('accuracy_score :', acc)
 
 
 ### csv 파일 만들기 ###

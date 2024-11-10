@@ -120,3 +120,6 @@ print('acc_score :', accuracy_score)
 # acc_score : 0.44047619047619047
 
 # False
+# loss : 1.2337721273070201e-05
+# acc : 1.0
+# acc_score : 1.0

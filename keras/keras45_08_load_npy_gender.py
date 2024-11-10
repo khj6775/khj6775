@@ -6,7 +6,7 @@ from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D, BatchNormalization
 import time
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
-from sklearn.metrics import r2_score, accuracy_score
+from sklearn.metrics import accuracy_score
 
 import numpy as np
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -111,8 +111,8 @@ y_pre = model.predict(x_test)
 # print("걸린 시간 :", round(end-start,2),'초')
 
 y_pre = np.round(y_pre)
-r2 = accuracy_score(y_test, y_pre)
-print('accuracy_score :', r2)
+acc = accuracy_score(y_test, y_pre)
+print('accuracy_score :', acc)
 
 # loss : 0.21999025344848633
 # acc : 0.90909
