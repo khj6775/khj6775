@@ -113,3 +113,9 @@ print('accuracy_score :', acc)
 # loss : 0.21999025344848633
 # acc : 0.90909
 # accuracy_score : 0.9090909090909091
+
+
+# True
+# loss : 0.25176364183425903
+# acc : 0.90099
+# accuracy_score : 0.9009937430990063
