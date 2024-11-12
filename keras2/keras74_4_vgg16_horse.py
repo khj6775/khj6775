@@ -109,4 +109,4 @@ print('acc_score :', accuracy_score)
 # acc : 0.5291
 # acc_score : 0.470873786407767
 
-###### batch_size 변경후 성능 향상!!!!!!!!
+###### batch_size 변경후 성능 향상!!!!!!!
