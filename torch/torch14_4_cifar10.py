@@ -64,7 +64,7 @@ class CNN(nn.Module):
         x = self.hidden_layer1(x)
         x = self.hidden_layer2(x)
         x = self.hidden_layer3(x)
-        x = x.view(x.shape[0], -1)   # x.shape[0]  x 의 배치
+        x = x.permute(x.shape[0], -1)   # x.shape[0]  x 의 배치
         # x = flatten()(x) # 케라스, 윗줄과 같은 뜻
         x = self.hidden_layer4(x)
         x = self.output_layer(x)
@@ -125,7 +125,7 @@ def evaluate(model, criterion, loader):
         return epoch_loss / len(loader), epoch_acc / len(loader)
 # loss, acc = model.evaluate(x_test, y_test)
 
-epochs = 10
+epochs = 6
 for epoch in range(1, epochs + 1):  # 가독성을 위해 + 1 해준다.
     loss, acc = train(model, criterion, optimizer, train_loader)
 
