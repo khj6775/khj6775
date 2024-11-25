@@ -73,7 +73,7 @@ y_submit = model.predict(test_csv)
 print(y_submit)
 print(y_submit.shape)      #(715, 1)
 
-######## submission.csv 만들기 ###############
+######## submission.csv 만들기 ##################
 submission_csv['count'] = y_submit
 print(submission_csv)
 print(submission_csv.shape)
