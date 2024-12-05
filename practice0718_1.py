@@ -26,7 +26,7 @@ print(train_csv.isnull().sum())
 print(test_csv.isna().sum())
 print(test_csv.isnull().sum())
 
-############# x와 y를 분리 ###########
+############# x와 y를 분리 #############
 x = train_csv.drop(['casual', 'registered', 'count'], axis=1)
 print(x)
 
