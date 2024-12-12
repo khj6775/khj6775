@@ -1,3 +1,12 @@
+from sklearn.datasets import fetch_covtype
+import numpy as np
+import pandas as pd
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense, Dropout
+import time
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.metrics import r2_score, accuracy_score
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
@@ -10,11 +19,26 @@ from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
 from lightgbm import LGBMClassifier
 from sklearn.ensemble import StackingClassifier
+import pandas as pd
+from sklearn.datasets import load_digits
 
-#1. 데이터 
-x, y = load_breast_cancer(return_X_y=True)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state=1186,
+import tensorflow as tf
+import random as rn
+rn.seed(337)
+tf.random.set_seed(337) # seed 고정 (첫 가중치가 고정)
+np.random.seed(337)
+
+#1. 데이터
+x, y = load_digits(return_X_y=True)
+random_state = 777
+
+
+from sklearn.preprocessing import PolynomialFeatures
+pf = PolynomialFeatures(degree=2, include_bias=False)
+x = pf.fit_transform(x)
+
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=777, train_size=0.8,
                                                     stratify=y
                                                     )
 
@@ -47,5 +71,9 @@ y_pre = model.predict(x_test)
 print('model.score :', model.score(x_test, y_test))
 print('스태킹 acc :', accuracy_score(y_test, y_pre))
 
-# model.score : 0.9912280701754386
-# 스태킹 acc : 0.9912280701754386
+# 이전 성능
+#  0.9861111111111112
+
+## PF
+# 0.9805555555555555
+

@@ -14,6 +14,10 @@ from sklearn.ensemble import StackingClassifier
 #1. 데이터 
 x, y = load_breast_cancer(return_X_y=True)
 
+from sklearn.preprocessing import PolynomialFeatures
+pf = PolynomialFeatures(degree=2, include_bias=False)
+x = pf.fit_transform(x)
+
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, random_state=1186,
                                                     stratify=y
                                                     )
@@ -49,3 +53,7 @@ print('스태킹 acc :', accuracy_score(y_test, y_pre))
 
 # model.score : 0.9912280701754386
 # 스태킹 acc : 0.9912280701754386
+
+## PF
+# 0.9912280701754386
+
