@@ -96,7 +96,7 @@ aaa = Custom_Dataset()
 # print(len(aaa))     # 937
 # print(aaa[937])     # error, 936까지 있음
 
-###### x 는 (937, 30, 3)의 데이터, y 는 (937, 1) #######
+###### x 는 (937, 30, 3)의 데이터, y 는 (937, 1) #########
 # train_loader = DataLoader(aaa, batch_size=32)
 
 # aaa = iter(train_loader)
