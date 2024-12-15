@@ -14,10 +14,8 @@ datasets = fetch_california_housing()
 x = datasets.data
 y = datasets.target
 
-
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-
 
 print(x.shape)  # (20640, 8)
 
