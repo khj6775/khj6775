@@ -115,7 +115,7 @@ print("============================================")
 #4. 평가, 예측
 # loss = model.evaluate(x, y)
 def evaluate(model, criterion, x, y):
-    model.eval()    # 평가모드 // 역잔파, 가중치 갱신, 기울기 계산할수 있기도 없기도,
+    model.eval()    # 평가모드 // 역전파, 가중치 갱신, 기울기 계산할수 있기도 없기도,
                     # 드롭아웃, 배치노멀 <- 얘네들 몽땅 하지마!!!
     with torch.no_grad():
         y_predict = model(x)

@@ -88,9 +88,9 @@ print("============================================")
 def evaluate(model, criterion, x, y):
     model.eval()    # 평가모드 // 역전파, 가중치 갱신, 기울기 계산할수 있기도 없기도,
                     # 드롭아웃, 배치노멀 <- 얘네들 몽땅 하지마!!!
-    with torch.no_grad():
+    with torch.no_grad():   # 기울기 계산 하지마. 확인사살.
         y_predict = model(x)
-        loss2 = criterion(y, y_predict)
+        loss2 = criterion(y, y_predict)      # 최종 로스
     return loss2.item()
 
 last_loss = evaluate(model, criterion, x_test, y_test)
