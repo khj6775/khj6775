@@ -125,7 +125,7 @@ def evaluate(model, criterion, x, y):
 last_loss = evaluate(model, criterion, x_test, y_test)
 print("최종 loss : ", last_loss)
 
-##################### 요 밑에 완성할 것 #############################
+##################### 요 밑에 완성할 것 ############################
 from sklearn.metrics import accuracy_score
 
 y_predict = model(x_test)
