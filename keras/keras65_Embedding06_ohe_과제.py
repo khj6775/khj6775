@@ -91,7 +91,7 @@ date = date.strftime("%m%d_%H%M")
 path = './_save/keras65/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5' 
 filepath = "".join([path, 'k65_06_', date, '_', filename])   
-#####################################
+######################################
 
 mcp = ModelCheckpoint(
     monitor='val_loss',
