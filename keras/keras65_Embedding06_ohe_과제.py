@@ -83,7 +83,7 @@ es = EarlyStopping(monitor='val_loss', mode='min',
                    restore_best_weights=True,
                    )
 
-###### mcp 세이브 파일명 만들기 ######
+###### mcp 세이브 파일명 만들기 #######
 import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
