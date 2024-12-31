@@ -24,7 +24,7 @@ outliers_loc, iqr = outliers(aaa)
 print("이상치의 위치 : ", outliers_loc)
 
 
-#### subplot 형태로 나오게 변경 #####
+##### subplot 형태로 나오게 변경 #####
 import matplotlib.pyplot as plt
 plt.boxplot(aaa)
 plt.axhline(iqr, color='red', label='IQR')
