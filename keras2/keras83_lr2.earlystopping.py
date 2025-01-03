@@ -36,12 +36,13 @@ for i in range(epochs):
         w = w + lr
     
     if(loss < min): 
+        count=0         # 초기화 해줘야 갱신된다.
         min = loss
           
     else :
         count +=1
         
     if(count == 10):
-        print('Loss : ', round(loss, 4), '\t Predict : ', round(hypothesis, 4))
+        print('Loss : ', loss, '\t Predict : ', round(hypothesis, 4))
         break
     
