@@ -7,7 +7,7 @@ tf.compat.v1.set_random_seed(777)
 ###### 1. Session() // sess.run(변수) #######
 # 블라 블라 블라.....
 
-###### 2. Session() // sess.eval(session=sess) #######
+###### 2. Session() // sess.eval(session=sess) ######
 # 블라 블라 블라.....
 
 ###### 3. InteractiveSession() // 변수.eval() #######
