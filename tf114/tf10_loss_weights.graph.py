@@ -22,8 +22,12 @@ with tf.compat.v1.Session() as sess:
         w_history.append(curr_w)
         loss_history.append(curr_loss)
 
-print("================= Loss history ====================")
-print(loss_history)
+
+# print("================= w history ====================")
+# print(w_history)
+
+# print("================= Loss history ====================")
+# print(loss_history)
 
 plt.plot(w_history, loss_history)
 plt.xlabel('Weights')
